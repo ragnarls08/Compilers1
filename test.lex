@@ -1,0 +1,5 @@
+
+%%
+tester = "raggi"
+%%
+{tester}	{}
