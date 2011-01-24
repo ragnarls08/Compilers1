@@ -1,5 +1,15 @@
+%option noyywrap
+%option c++
+%{
+#include "stdio.h"
+%}
 
 %%
-tester = "raggi"
+old ;
 %%
-{tester}	{}
+
+int main(int argc, char* argv[]) {
+yyFlexLexer Lexer;
+Lexer.yylex();
+return 0;
+}
