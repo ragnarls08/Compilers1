@@ -12,6 +12,8 @@
 #include "token.h"
 #include "FlexLexer.h"
 
+extern OpType Oper;
+extern DataType Type;
 
 struct keyWord {
 	char	*lexeme;
@@ -51,7 +53,10 @@ public:
 	Scanner();
 	~Scanner();
 	Token* nextToken();				// returns the next token from FlexLexer	
+	
 };
+
+
 
 #endif
 

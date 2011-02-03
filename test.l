@@ -5,8 +5,8 @@
 
 %{
 #include "token.h"
-OpType Oper=op_NONE;
-DataType Type=dt_NONE;
+OpType Oper = op_NONE;
+DataType Type = dt_NONE;
 
 using namespace std;
 %}
@@ -15,10 +15,12 @@ using namespace std;
 letter	[a-z]
 digit	[0-9]
 
+
 id		{letter}({letter}|{digit})*
 %%
 "<="		{ Oper = op_LE; Type = dt_OP; return(tc_RELOP);}
 {id}   		{ Oper = op_NONE; Type = dt_ID ;return(tc_ID);}
+<<EOF>>		{ Oper = op_NONE; Type = dt_NONE; return(tc_EOF);}
 .			{ ;}
 %%
 

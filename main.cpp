@@ -4,9 +4,15 @@
 int main( int /* argc */, char** /* argv */ )
 {
 	Scanner scanner = Scanner();
-
-	while( scanner.nextToken()->getTokenCode() != tc_EOF )
-		;
+	
+	Token *currTok;
+	currTok = scanner.nextToken();
+	
+	while(currTok->getTokenCode() != tc_EOF )
+	{
+		std::cout << currTok->getTokenCode();
+		currTok = scanner.nextToken();
+	}
 	return 0;
 }
 

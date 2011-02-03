@@ -436,8 +436,8 @@ static yyconst flex_int32_t yy_rule_can_match_eol[5] =
 #line 1 "test.l"
 #line 7 "test.l"
 #include "token.h"
-OpType Oper=op_NONE;
-DataType Type=dt_NONE;
+OpType Oper = op_NONE;
+DataType Type = dt_NONE;
 
 using namespace std;
 #line 444 "lex.yy.cc"
@@ -545,7 +545,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 19 "test.l"
+#line 20 "test.l"
 
 #line 551 "lex.yy.cc"
 
@@ -642,27 +642,29 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "test.l"
+#line 21 "test.l"
 { Oper = op_LE; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "test.l"
+#line 22 "test.l"
 { Oper = op_NONE; Type = dt_ID ;return(tc_ID);}
+	YY_BREAK
+case YY_STATE_EOF(INITIAL):
+#line 23 "test.l"
+{ Oper = op_NONE; Type = dt_NONE; return(tc_EOF);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "test.l"
+#line 24 "test.l"
 { ;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 23 "test.l"
+#line 25 "test.l"
 ECHO;
 	YY_BREAK
-#line 664 "lex.yy.cc"
-case YY_STATE_EOF(INITIAL):
-	yyterminate();
+#line 668 "lex.yy.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1569,7 +1571,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 23 "test.l"
+#line 25 "test.l"
 
 
 
