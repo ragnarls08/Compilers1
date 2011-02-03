@@ -42,15 +42,15 @@ class Scanner {
 
 private:
 	FlexLexer* lexer;				// A Flex scanner
-	Token	m_currentToken;				// current token
-	void	setCurrentToken(TokenCode tc, DataType ty, OpType oper); // sets the corresponding fields in m_currentToken
-	void	setCurrentToken(TokenCode tc, DataType ty, const char* lexeme); // sets the corresponding fields in m_currentToken
-	TokenCode keywordCheck(const char *str);	// returns the appropriate tokencode if str is a keyword, else tc_ID
+//	Token	m_currentToken;				// current token
+//	void	setCurrentToken(TokenCode tc, DataType ty, OpType oper); // sets the corresponding fields in m_currentToken
+//	void	setCurrentToken(TokenCode tc, DataType ty, const char* lexeme); // sets the corresponding fields in m_currentToken
+//	TokenCode keywordCheck(const char *str);	// returns the appropriate tokencode if str is a keyword, else tc_ID
 											
 public:
 	Scanner();
 	~Scanner();
-	Token *nextToken(void);				// returns the next token from FlexLexer	
+	Token* nextToken();				// returns the next token from FlexLexer	
 };
 
 #endif
