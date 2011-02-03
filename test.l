@@ -22,6 +22,7 @@ id		{letter}({letter}|{digit})*
 {id}   		{ Oper = op_NONE; Type = dt_ID ;return(tc_ID);}
 <<EOF>>		{ Oper = op_NONE; Type = dt_NONE; return(tc_EOF);}
 .			{ ;}
+"\n"		{ ;}
 %%
 
 

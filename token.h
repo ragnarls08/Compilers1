@@ -10,6 +10,7 @@
 #define	token_h
 
 #include "symtab.h"
+#include <vector>
 
 #define MaxLexemeSize 32
 
@@ -87,6 +88,9 @@ private:
 	DataType	m_dataType;			// the data type
 	DataValue	m_dataValue;		// the attribute the token
 	SymbolTableEntry*	m_symtabEntry;	// the corresponding entry in symbol table (if identifier)
+
+	std::vector<char*> TokenString;
+	std::vector<char*> OpCodes;
 
 public:
 	Token(void);

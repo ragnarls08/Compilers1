@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+
 Scanner::Scanner()
 {
 	lexer = new yyFlexLexer;
@@ -21,18 +22,18 @@ Token* Scanner::nextToken()
 
 	if( tCode == tc_ID ) //check if keyword, if so change tCode, set type to keyword
 	{
-		std::cout << "identifier found\n";
+//		std::cout << "identifier found\n";
 		
-		TokenCode tc = keywordCheck( lexer->YYText() );			
+		TokenCode tc = keywordCheck( lexer->YYText() );			/////tolower
 		if(tc == 0)//id
 		{
-			std::cout << "its an id ...\n";
+//			std::cout << "its an id ...\n";
 			char *test = "tester";
-			setCurrentToken(tCode, Type, test);
+			setCurrentToken(tCode, dt_KEYWORD, lexer->YYText() );
 		}
 		else// not id use new tcode
 		{
-			std::cout << "its a keyword ...\n";
+//			std::cout << "its a keyword ...\n";
 			setCurrentToken(tCode, Type, Oper);
 		}
 	}
@@ -47,16 +48,24 @@ Token* Scanner::nextToken()
 
 TokenCode Scanner::keywordCheck(const char *str)
 {
-	std::cout << "checkin: " << str << "\n";
+/*
+	char *ch = &str[0];
+	while( ch != '\0')
+	{
+		tolower(*ch);
+		*ch++;
+	}
+	*/
+//	std::cout << "checkin: " << str << "\n";
 	keyWord *iter = &keyWords[0];
 
 	while( 1 )
-	{
-		std::cout << iter->lexeme << "\n";
-		
-		std::cout << "str : " << str << "\n";
+	{	
 		if( strcmp(iter->lexeme, str ) == 0 )
-			std::cout << "ITS THE SAME \n\n\n";
+		{
+//			std::cout << "MATCHED " << iter->lexeme << " with " << str << "\n";
+			return iter->tCode;
+		}
 		
 		if( iter->tCode == tc_NONE )
 			break;
@@ -65,6 +74,10 @@ TokenCode Scanner::keywordCheck(const char *str)
 	}	
 	return (TokenCode)0;
 }
+
+
+
+
 void Scanner::setCurrentToken(TokenCode tc, DataType ty, OpType oper)
 {
 	m_currentToken.setTokenCode(tc);
@@ -77,7 +90,6 @@ void Scanner::setCurrentToken(TokenCode tc, DataType ty, const char* lexeme)
 	m_currentToken.setDataType(ty);
 	m_currentToken.setDataValue(lexeme);
 }
-
 
 
 
