@@ -2,15 +2,12 @@
 #include <iostream>
 using namespace std;
 
-Token::Token(){
-}
-
-Token::~Token(){
-}
+Token::Token()
+{}
 
 //***********************GETTERS
 
-TokenCode Token::getTokenode()const{
+TokenCode Token::getTokenCode()const{
 	return m_tokenCode;
 }
 DataType Token::getDataType()const{
@@ -26,20 +23,25 @@ SymbolTableEntry* Token::getSymTabEntry()const{
 //***********************SETTERS
 
 void Token::setTokenCode(const TokenCode tc){
-	this.m_tokenCode = tc;
+	m_tokenCode = tc;
 }
 void Token::setDataType(const DataType type){
-	this.m_dataType = type;
+	m_dataType = type;
 }
 void Token::setDataValue(const char *val){
-	//this.m_dataValue = *val
+	*m_dataValue.lexeme = *val;
 }
-void Token::setDataValue(){
-	//this.m_dataValue = *val
+void Token::setDataValue(const OpType oper){
+	m_dataValue.op = oper;
+}
+void Token::setSymTabEntry(SymbolTableEntry* entry){
+	m_symtabEntry = 0;
 }
 char* Token::tokenCodeToString(){
-	cout << m_tokenCode << '\n';
+	cout << m_tokenCode << '\n';///////////////////////////
 }
 char* Token::opCodeToString(){
-	cout << m_
+	cout << "lol\n";//////////////////////////////////////
 }
+
+
