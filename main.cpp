@@ -10,7 +10,7 @@ int main( int /* argc */, char** /* argv */ )
 	
 	while(currTok->getTokenCode() != tc_EOF )
 	{
-		std::cout << currTok->getTokenCode();
+		std::cout << "Main: code = " << currTok->getTokenCode() << "\n";
 		currTok = scanner.nextToken();
 	}
 	return 0;
