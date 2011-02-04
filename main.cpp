@@ -10,19 +10,18 @@ int main( int /* argc */, char** /* argv */ )
 	
 	while(currTok->getTokenCode() != tc_EOF )
 	{
-		std::cout << currTok->tokenCodeToString() << "\n";
-		if( currTok->getDataType() != dt_KEYWORD || currTok->getDataType() != dt_NONE )
+					
+		std::cout << currTok->tokenCodeToString() << "";
+		if( currTok->getDataType() != dt_KEYWORD && currTok->getDataType() != dt_NONE )
 		{
-	//		std::cout << currTok->getDataValue().lexeme << "\n";
-		}
-		else
-		{
-	//		std::cout << currTok->opCodeToString() << "\n";
+			std::cout << "(" << currTok->getDataValue().lexeme << ")";
 		}
 
-				std::cout << currTok->getDataValue().lexeme << "\n";
 		currTok = scanner.nextToken();
+		std::cout << " ";
 	}
+	
+	std::cout << "\n\n";
 	return 0;
 }
 

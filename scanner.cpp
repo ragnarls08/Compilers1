@@ -16,38 +16,34 @@ Scanner::~Scanner()
 
 Token* Scanner::nextToken()
 {
+//If the current token is an identifier then you need to check if it is a keyword. 
+//If that is the case, then you should change tCode appropriately, as well as setting Type= dt_KEYWORD.  
+//Each keyword has a separate token name.
 
 	TokenCode tCode;
 	tCode = (TokenCode)lexer->yylex();
 
-	if( tCode == tc_ID ) //check if keyword, if so change tCode, set type to keyword
+	if( Type == dt_ID ) // identifier
 	{
-//		std::cout << "identifier found\n";
-		
-		TokenCode tc = keywordCheck( lexer->YYText() );			/////tolower
-		if(tc == 0)//id
+		TokenCode tc = keywordCheck( lexer->YYText() );
+		if( tc != -1 )// its a keyword
 		{
-//			std::cout << "its an id ...\n";
-			char *test = "tester";
-			setCurrentToken(tCode, dt_KEYWORD, lexer->YYText() );
+			tCode = tc;
+			Type = dt_KEYWORD;
 		}
-		else// not id use new tcode
-		{
-//			std::cout << "its a keyword ...\n";
-			setCurrentToken(tCode, Type, Oper);
-		}
+		setCurrentToken(tCode, Type, lexer->YYText() );
 	}
-	else 
-	{
-		
-		setCurrentToken(tCode, Type, Oper);
-	}
+	else if ( Type == dt_REAL || Type == dt_INTEGER )
+		setCurrentToken(tCode, Type, lexer->YYText());
+	else
+		setCurrentToken(tCode, Type, Oper );
 
 	return &m_currentToken;
 }
 
 TokenCode Scanner::keywordCheck(const char *str)
 {
+//	std::cout << "YYText is now: " << str << "\n";
 /*
 	char *ch = &str[0];
 	while( ch != '\0')
@@ -72,7 +68,7 @@ TokenCode Scanner::keywordCheck(const char *str)
 			
 		*iter++;
 	}	
-	return (TokenCode)0;
+	return (TokenCode)-1;
 }
 
 

@@ -1,5 +1,6 @@
 #include "token.h"
 #include <iostream>
+#include <string.h>
 using namespace std;
 
 Token::Token()
@@ -41,22 +42,21 @@ Token::Token()
 	TokenString.push_back("NONE");
 	
 	
-	OpCodes.push_back("op_PLUS");
-	OpCodes.push_back("op_MINUS");
-	OpCodes.push_back("op_OR");
-	OpCodes.push_back("op_MULT");
-	OpCodes.push_back("op_DIVIDE");
-	OpCodes.push_back("op_AND");
-	OpCodes.push_back("op_DIV");
-	OpCodes.push_back("op_MOD");
-	OpCodes.push_back("op_LT");
-	OpCodes.push_back("op_GT");
-	OpCodes.push_back("op_LE");
-	OpCodes.push_back("op_GE");
-	OpCodes.push_back("op_EQ");
-	OpCodes.push_back("op_NE");
-	OpCodes.push_back("op_NONE");
-
+	OpCodes.push_back("PLUS");
+	OpCodes.push_back("MINUS");
+	OpCodes.push_back("OR");
+	OpCodes.push_back("MULT");
+	OpCodes.push_back("DIVIDE");
+	OpCodes.push_back("AND");
+	OpCodes.push_back("DIV");
+	OpCodes.push_back("MOD");
+	OpCodes.push_back("LT");
+	OpCodes.push_back("GT");
+	OpCodes.push_back("LE");
+	OpCodes.push_back("GE");
+	OpCodes.push_back("EQ");
+	OpCodes.push_back("NE");
+	OpCodes.push_back("NONE");
 }
 
 //***********************GETTERS
@@ -83,7 +83,7 @@ void Token::setDataType(const DataType type){
 	m_dataType = type;
 }
 void Token::setDataValue(const char *val){
-	*m_dataValue.lexeme = *val;
+	strcpy(m_dataValue.lexeme, val);
 }
 void Token::setDataValue(const OpType oper){
 	m_dataValue.op = oper;
