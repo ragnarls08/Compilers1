@@ -1,2 +1,15 @@
-raggi besti
-raggi lang besti
+program test(input, output); 
+{this is a test program} 
+var 
+   i, j : integer; 
+   number : real; 
+begin 
+	i := 0; 
+	j := 1; 
+	if (i < j) then 
+		number = 12.34 
+	else 
+		number = 12.34e7; 
+	i := i + j; 
+	! 
+end.
