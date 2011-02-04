@@ -12,6 +12,7 @@ using namespace std;
 //SymbolTableEntry
 SymbolTableEntry::SymbolTableEntry(const char* lexeme)
 {
+	m_lexeme = new char[strlen(lexeme)];
 	strcpy(m_lexeme, lexeme);
 
 	int i = 0;
@@ -73,9 +74,9 @@ SymbolTableEntry* SymbolTable::lookup(const char* lexeme)
 			return m_entry[i];
 		i++;
 	}
+	return 0;
 }
-void SymbolTable::print(void)
-{
+void SymbolTable::print(void){
 	int i = 0;
 	while(i <= lastEntry)
 	{
