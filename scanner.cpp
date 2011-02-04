@@ -32,19 +32,21 @@ Token* Scanner::nextToken()
 			tCode = tc;
 			Type = dt_KEYWORD;
 		}
-	/*	
-		char *temp = new *char[32];
-		strcpy(*temp, lexer->YYText() );
+		
+		//copy the string and convert it to lowercase
+		char *temp = new char[32];
+		strcpy(temp, lexer->YYText());
+		
 		int i = 0;
-		while( temp[i] != '\0' )
+		while( temp[i] )
 		{
-//			*temp[i] = tolower(*temp[i]);
+			temp[i] = tolower( temp[i] );
 			i++;;
 		}
-*/
-		setCurrentToken(tCode, Type, lexer->YYText() );
-		//delete temp;
+
+		setCurrentToken(tCode, Type, temp );
 		
+		delete temp;
 	}
 	else if ( Type == dt_REAL || Type == dt_INTEGER )
 		setCurrentToken(tCode, Type, lexer->YYText());
