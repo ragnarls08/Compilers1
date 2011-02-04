@@ -8,17 +8,24 @@ int main( int /* argc */, char** /* argv */ )
 	Token *currTok;
 	currTok = scanner.nextToken();
 	
-	while(currTok->getTokenCode() != tc_EOF )
+	while( 1 )
 	{
 					
 		std::cout << currTok->tokenCodeToString() << "";
-		if( currTok->getDataType() != dt_KEYWORD && currTok->getDataType() != dt_NONE )
+		
+		if( currTok->getDataType() == dt_OP )
+			std::cout << "(" << currTok->opCodeToString() << ")";
+		else if( currTok->getDataType() != dt_KEYWORD && currTok->getDataType() != dt_NONE )
 		{
 			std::cout << "(" << currTok->getDataValue().lexeme << ")";
 		}
+		
 
 		currTok = scanner.nextToken();
 		std::cout << " ";
+		
+		if(currTok->getTokenCode() == tc_EOF)
+			break;
 	}
 	
 	std::cout << "\n\n";
