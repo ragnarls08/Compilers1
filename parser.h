@@ -12,7 +12,7 @@
 #include "token.h"
 #include "scanner.h"
 #include "symtab.h"
-#include "code.h"
+//#include "code.h"
 
 class Parser {
 
@@ -20,7 +20,7 @@ private:
 	Scanner* m_lexan;		// Lexical analyzer
 	SymbolTable* m_symTab;	// Symbol table
 	Token* m_currentToken;	// Current token
-	Code*  m_code;			// Code
+//	Code*  m_code;			// Code
 	bool m_parserError;		// Has a parsing error occurred?
 	int  m_totalErrors;		// Total number of errors
 
@@ -69,14 +69,14 @@ private:
 	/* Code generation */
 	SymbolTableEntry* newLabel();
 	SymbolTableEntry* newTemp();
-	CodeOp opToCode(OpType op);
+//	CodeOp opToCode(OpType op);
 
 public:
 	Parser(bool listing);
 	~Parser();
 	void parse();
 	SymbolTable* getSymbolTable();
-	Code* getCode() {return m_code;}
+//	Code* getCode() {return m_code;}
 	int totalErrors()	{return m_totalErrors;}
 
 };

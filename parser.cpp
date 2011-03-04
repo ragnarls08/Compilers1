@@ -1,9 +1,26 @@
 #include "parser.h"
 
-Parser::Parser(){
-	
+Parser::Parser(bool listing)
+{
+	m_lexan = new Scanner();	
+	m_symTab = new SymbolTable();
+
+	m_parserError = false;
+	m_totalErrors = 0;
+
 }
 
+Parser::~Parser()
+{
+}
+
+void Parser::parse()
+{
+	//start the parsing
+	m_currentToken = m_lexan->nextToken();
+
+	parseProgram();
+}
 //vantar
 
 void Parser::parseProgram(){

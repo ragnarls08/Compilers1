@@ -1,9 +1,16 @@
-#include "scanner.h"
-#include "token.h"
-#include "symtab.h"
+//#include "scanner.h"
+//#include "token.h"
+//#include "symtab.h"
+#include "parser.h"
 
 int main( int /* argc */, char** /* argv */ )
 {
+	std::cout << "testing123...\n";
+	
+	Parser p = Parser(false);
+
+	p.parse();
+/*
 	Scanner scanner = Scanner();
 	
 	SymbolTable st = SymbolTable();
@@ -45,6 +52,7 @@ int main( int /* argc */, char** /* argv */ )
 	
 	std::cout << "\n\n";
 	st.print();
+*/
 	return 0;
 }
 
