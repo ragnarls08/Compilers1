@@ -3,3 +3,7 @@
 Parser::Parser(){
 	
 }
+
+void Parser::parseProgram(){
+	
+}
