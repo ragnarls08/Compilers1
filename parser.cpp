@@ -252,14 +252,26 @@ void Parser::parseCompoundStatement()
 	match( tc_END );
 	getToken();
 }
-void Parser::parseOptionalStatement(){
-
+void Parser::parseOptionalStatement()
+{
+	if( getTokenCode() == tc_BEGIN || getTokenCode() == tc_ID 
+		|| getTokenCode() == tc_IF || getTokenCode() == tc_WHILE )
+		parseStatementList();
 }
-void Parser::parseStatementList(){
-
+void Parser::parseStatementList()
+{
+	parseStatement();
+	parseStatementListMore();
 }
-void Parser::parseStatementListMore(){
+void Parser::parseStatementListMore()
+{
+	while( getTokenCode() == tc_SEMICOL )
+	{
+		match( tc_SEMICOL );
+		getToken();
 
+		parseIdentifierListAndType(false);
+	}
 }
 void Parser::parseStatement(){
 
