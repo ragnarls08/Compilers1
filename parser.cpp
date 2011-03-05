@@ -198,7 +198,7 @@ void Parser::parseIdentifierListMore(EntryList *eList)
 void Parser::parseIdentifierListAndType(bool subProgramHead)
 {
 	parseIdentifierList(0);
-
+std::cout << "201\n";
 	match( tc_COLON );
 	getToken();
 
@@ -275,8 +275,21 @@ void Parser::parseStatementListMore()
 		parseIdentifierListAndType(false);
 	}
 }
-void Parser::parseStatement(){
-
+void Parser::parseStatement()
+{
+	if( getTokenCode() == tc_ID )
+	{	
+		match( tc_ID );
+		getToken();
+		
+		parseIdOrProcedureStatement(0);
+	}
+	else if( getTokenCode() == tc_IF )
+		parseIfStatement();
+	else if( getTokenCode() == tc_WHILE )
+		parseWhileStatement();
+	else
+		parseCompoundStatement();
 }
 void Parser::parseIfStatement(){
     //if expression then statement else statement
@@ -307,8 +320,35 @@ void Parser::parseWhileStatement(){
 
     parseStatement();
 }
-void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry){
+void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry)
+{
+	if( getTokenCode() == tc_ASSIGNOP )
+	{
+		match( tc_ASSIGNOP );
+		getToken();
+		
+		parseExpression();
+	}
+	else if( getTokenCode() == tc_LPAREN )
+	{
+		match( tc_LPAREN );
+		getToken();
+		
+		parseExpressionList(0);
 
+		match( tc_RPAREN );
+		getToken();
+	}
+	else if( getTokenCode() == tc_LBRACKET )
+	{
+		parseArrayReference();
+		
+		match( tc_ASSIGNOP );
+		getToken();
+
+		parseExpression();
+	}
+	//else empty
 }
 
 SymbolTableEntry* Parser::parseExpression()
@@ -329,8 +369,13 @@ SymbolTableEntry* Parser::parseSimpleExpression()
 {
     SymbolTableEntry* entry = NULL;
 
-    parseTerm();
+	if( getTokenCode() == tc_ADDOP )
+	{
+		match( tc_ADDOP );
+		getToken();
+	}
 
+	parseTerm();
     parseSimpleExpressionAddop(entry);
 }
 
@@ -351,14 +396,91 @@ SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry
 
 SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry)
 {
+	if( getTokenCode() == tc_ADDOP )
+	{
+		match( tc_ADDOP );
+		getToken();
 
+		parseTerm();
+		parseSimpleExpressionAddop(0);
+	}
 }
 
 SymbolTableEntry* Parser::parseTerm()
 {
+	parseFactor();
+	parseTermRest(0);
+
     return NULL;
 }
 
-void Parser::parseArrayReference(){
+void Parser::parseArrayReference()
+{
+	match( tc_LBRACKET );
+	getToken();
 
+	parseExpression();
+
+	match( tc_RBRACKET );
+	getToken();
+}
+SymbolTableEntry* Parser::parseFactor()
+{
+	if( getTokenCode() == tc_ID )
+	{
+		match( tc_ID );
+		getToken();
+
+		parseFactorRest(0);
+	}
+	else if( getTokenCode() == tc_LPAREN )
+	{
+		match( tc_LPAREN );
+		getToken();
+
+		parseExpression();
+
+		match( tc_RPAREN );
+		getToken();
+	}
+	else if( getTokenCode() == tc_NOT )
+	{
+		match( tc_NOT );
+		getToken();
+
+		parseFactor();
+	}
+	else
+	{
+		match( tc_NUMBER );
+		getToken();
+	}
+}
+SymbolTableEntry* Parser::parseFactorRest(SymbolTableEntry* prevEntry)
+{
+	if( getTokenCode() == tc_LPAREN )
+	{
+		match( tc_LPAREN );
+		getToken();
+
+		parseExpressionList(0);
+
+		match( tc_RPAREN );
+		getToken();
+	}
+	else if( getTokenCode() == tc_LBRACKET )
+	{
+		parseArrayReference();
+	}
+}
+SymbolTableEntry* Parser::parseTermRest(SymbolTableEntry* prevEntry)
+{
+	while( getTokenCode() == tc_MULOP )
+	{
+		match( tc_MULOP );
+		getToken();
+
+		parseFactor();
+		parseTermRest(0);
+	}
 }
