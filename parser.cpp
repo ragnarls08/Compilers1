@@ -364,13 +364,14 @@ void Parser::parseExpressionList(SymbolTableEntry* prevEntry){
 	parseExpressionListMore(0);
 }
 
-void Parser::parseExpressionListMore(EntryList* eList){
-	while( getTokenCode() == tc_COMMA ) {
+void Parser::parseExpressionListMore(EntryList* eList)
+{
+	while( getTokenCode() == tc_COMMA ) 
+	{
 		match( tc_COMMA );
 		getToken();
 
 		SymbolTableEntry* entry = parseExpression();
-		parseExpressionListMore(0);
 	}
 }
 
