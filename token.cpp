@@ -40,8 +40,8 @@ Token::Token()
 	TokenString.push_back("DO");
 	TokenString.push_back("NOT");
 	TokenString.push_back("NONE");
-	
-	
+
+
 	OpCodes.push_back("PLUS");
 	OpCodes.push_back("MINUS");
 	OpCodes.push_back("OR");
@@ -89,13 +89,13 @@ void Token::setDataValue(const OpType oper){
 	m_dataValue.op = oper;
 }
 void Token::setSymTabEntry(SymbolTableEntry* entry){
-	m_symtabEntry = 0;
+	m_symtabEntry = entry; //breytt úr 0
 }
 char* Token::tokenCodeToString(){
 	return TokenString[m_tokenCode-1];
 }
 char* Token::opCodeToString(){
-	
+
 	return OpCodes[m_dataValue.op];
 }
 
