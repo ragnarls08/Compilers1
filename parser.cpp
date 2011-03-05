@@ -3,7 +3,7 @@
 
 Parser::Parser(bool listing)
 {
-	m_lexan = new Scanner();	
+	m_lexan = new Scanner();
 	m_symTab = new SymbolTable();
 
 	m_parserError = false;
@@ -13,6 +13,8 @@ Parser::Parser(bool listing)
 
 Parser::~Parser()
 {
+    delete m_lexan;
+    delete m_symTab;
 }
 
 void Parser::parse()
@@ -21,9 +23,23 @@ void Parser::parse()
 	getToken();//fetch the first token
 	parseProgram();
 }
+
 void Parser::getToken()
 {
-	this->m_currentToken = m_lexan->nextToken();
+	m_currentToken = m_lexan->nextToken();
+
+	if( m_currentToken->getTokenCode() == tc_ID || m_currentToken->getTokenCode() == tc_NUMBER )
+    {
+        SymbolTableEntry *entry = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
+
+        if(!entry)
+        {
+            entry = m_symTab->insert( m_currentToken->getDataValue().lexeme );
+            //m_currentToken->setSymTabEntry( entry );
+        }
+
+        m_currentToken->setSymTabEntry( entry );
+    }
 }
 void Parser::match( TokenCode tc )
 {
@@ -138,10 +154,10 @@ void Parser::parseArguments()
 		
 }
 void Parser::parseParameterList(){
-	
+
 }
 void Parser::parseParameterListMore(){
-	
+
 }
 void Parser::parseIdentifierList(EntryList *eList)
 {
@@ -211,41 +227,41 @@ void Parser::parseStandardType()
 
 }
 void Parser::parseCompoundStatement(){
-	
+
 }
 void Parser::parseOptionalStatement(){
-	
+
 }
 void Parser::parseStatementList(){
-	
+
 }
 void Parser::parseStatementListMore(){
-	
+
 }
 void Parser::parseStatement(){
-	
+
 }
 void Parser::parseIfStatement(){
-	
+
 }
 void Parser::parseWhileStatement(){
-	
+
 }
 void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry){
-	
+
 }
 
 //vantar
 
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry){
-	
+
 }
 void Parser::parseExpressionListMore(EntryList* eList){
-	
+
 }
 
 //vantar
 
 void Parser::parseArrayReference(){
-	
+
 }
