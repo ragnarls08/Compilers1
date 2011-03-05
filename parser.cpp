@@ -96,7 +96,6 @@ void Parser::parseDeclarations(bool subProgramHead)
 		getToken();
 
 		parseIdentifierListAndType(true);//true?
-		getToken();
 	
 		match( tc_SEMICOL );
 		getToken();
@@ -110,7 +109,7 @@ void Parser::parseSubprogramDeclaration()
 }
 void Parser::parseSubprogramDeclarations()
 {
-	while( getTokenCode() == tc_FUNCTION )
+	while( getTokenCode() == tc_FUNCTION || getTokenCode() == tc_PROCEDURE )
 	{
 		parseSubprogramDeclaration();
 		
@@ -151,13 +150,31 @@ void Parser::parseSubprogramHead()
 }
 void Parser::parseArguments()
 {
-		
-}
-void Parser::parseParameterList(){
+	if( getTokenCode() == tc_LPAREN )
+	{
+		match( tc_LPAREN );
+		getToken();
 
-}
-void Parser::parseParameterListMore(){
+		parseParameterList();
 
+		match( tc_RPAREN );
+		getToken();	
+	}	
+}
+void Parser::parseParameterList()
+{
+	parseIdentifierListAndType(false);
+	parseParameterListMore();
+}
+void Parser::parseParameterListMore()
+{
+	while( getTokenCode() == tc_SEMICOL )
+	{
+		match( tc_SEMICOL );
+		getToken();
+
+		parseIdentifierListAndType(false);
+	}
 }
 void Parser::parseIdentifierList(EntryList *eList)
 {
@@ -175,7 +192,6 @@ void Parser::parseIdentifierListMore(EntryList *eList)
 
 		match( tc_ID );
 		getToken();
-
 	}	
 }
 void Parser::parseIdentifierListAndType(bool subProgramHead)
@@ -223,11 +239,18 @@ void Parser::parseStandardType()
 		match( tc_INTEGER );
 	else
 		match( tc_REAL );
-	
 
+	getToken();
 }
-void Parser::parseCompoundStatement(){
+void Parser::parseCompoundStatement()
+{
+	match( tc_BEGIN );
+	getToken();
 
+	parseOptionalStatement();
+
+	match( tc_END );
+	getToken();
 }
 void Parser::parseOptionalStatement(){
 
