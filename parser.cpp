@@ -23,9 +23,20 @@ void Parser::parse()
 }
 //vantar
 
-void Parser::parseProgram(){
-	
+void Parser::parseProgram()
+{
+	parseProgramDefinition();	
+	parseDeclarations(false); //false?
+	parseSubprogramDeclarations();
+	parseCompoundStatement();
+
 }
+
+SymbolTableEntry* Parser::parseProgramDefinition()
+{
+	return 0;
+}
+
 void Parser::parseDeclarations(bool subProgramHead){
 	
 }
