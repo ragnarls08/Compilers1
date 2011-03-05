@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <iostream>
 
 Parser::Parser(bool listing)
 {
@@ -17,14 +18,28 @@ Parser::~Parser()
 void Parser::parse()
 {
 	//start the parsing
-	m_currentToken = m_lexan->nextToken();
-
 	parseProgram();
+}
+void Parser::getToken()
+{
+	this->m_currentToken = m_lexan->nextToken();
+}
+void Parser::match( TokenCode tc )
+{
+	if( getTokenCode() != tc )
+	{
+		Token t = Token();
+		t.setTokenCode(tc);
+
+		std::cout << "expected: " << t.tokenCodeToString() <<
+		" Found: " << m_currentToken->tokenCodeToString() << "\n";
+	}
 }
 //vantar
 
 void Parser::parseProgram()
 {
+
 	parseProgramDefinition();	
 	parseDeclarations(false); //false?
 	parseSubprogramDeclarations();
@@ -34,7 +49,23 @@ void Parser::parseProgram()
 
 SymbolTableEntry* Parser::parseProgramDefinition()
 {
-	return 0;
+	getToken();
+	match( tc_PROGRAM );
+
+	getToken();
+	match( tc_ID );
+
+	getToken();
+	match( tc_LPAREN );
+
+	getToken();
+//	parseIdentifierList();
+
+	getToken();
+	match( tc_RPAREN );
+
+	
+	return 0; // ?? 
 }
 
 void Parser::parseDeclarations(bool subProgramHead){
