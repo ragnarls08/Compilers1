@@ -69,6 +69,8 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 }
 
 void Parser::parseDeclarations(bool subProgramHead){
+
+	//comment fyrir gunna
 	
 }
 void Parser::parseSubprogramDeclaration(){
