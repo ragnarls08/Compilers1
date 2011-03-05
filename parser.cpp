@@ -18,6 +18,7 @@ Parser::~Parser()
 void Parser::parse()
 {
 	//start the parsing
+	getToken();//fetch the first token
 	parseProgram();
 }
 void Parser::getToken()
@@ -26,20 +27,23 @@ void Parser::getToken()
 }
 void Parser::match( TokenCode tc )
 {
+	Token t = Token();
+	t.setTokenCode(tc);
+
 	if( getTokenCode() != tc )
 	{
-		Token t = Token();
-		t.setTokenCode(tc);
-
-		std::cout << "expected: " << t.tokenCodeToString() <<
+				std::cout << "expected: " << t.tokenCodeToString() <<
 		" Found: " << m_currentToken->tokenCodeToString() << "\n";
+	}
+	else
+	{
+		std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
 	}
 }
 //vantar
 
 void Parser::parseProgram()
 {
-
 	parseProgramDefinition();	
 	parseDeclarations(false); //false?
 	parseSubprogramDeclarations();
@@ -49,39 +53,90 @@ void Parser::parseProgram()
 
 SymbolTableEntry* Parser::parseProgramDefinition()
 {
-	getToken();
 	match( tc_PROGRAM );
-
 	getToken();
+	
 	match( tc_ID );
-
 	getToken();
+
 	match( tc_LPAREN );
-
 	getToken();
-//	parseIdentifierList();
+	
+	parseIdentifierList(0);//breyta í rétt siðar
 
-	getToken();
 	match( tc_RPAREN );
+	getToken();	
 
+	match( tc_SEMICOL );
+	getToken();
 	
 	return 0; // ?? 
 }
 
-void Parser::parseDeclarations(bool subProgramHead){
+void Parser::parseDeclarations(bool subProgramHead)
+{
+	while( getTokenCode() == tc_VAR )
+	{
+		match( tc_VAR );
+		getToken();
+
+		parseIdentifierListAndType(true);//true?
+		getToken();
 	
+		match( tc_SEMICOL );
+		getToken();
+	}
 }
-void Parser::parseSubprogramDeclaration(){
-	
+void Parser::parseSubprogramDeclaration()
+{
+	parseSubprogramHead();
+	parseDeclarations(false);///////
+	parseCompoundStatement();	
 }
-void Parser::parseSubprogramDeclarations(){
-	
+void Parser::parseSubprogramDeclarations()
+{
+	while( getTokenCode() == tc_FUNCTION )
+	{
+		parseSubprogramDeclaration();
+		
+		match( tc_SEMICOL );
+		getToken();
+	}	
 }
-void Parser::parseSubprogramHead(){
+void Parser::parseSubprogramHead()
+{
+	if( getTokenCode() == tc_FUNCTION )
+	{
+		match( tc_FUNCTION );
+		getToken();
+
+		match( tc_ID );
+		getToken();
+
+		parseArguments();
+
+		match( tc_COLON );
+		getToken();
+
+		parseStandardType();
+	}
+	else
+	{
+		match( tc_PROCEDURE );
+		getToken();
+		
+		match( tc_ID );
+		getToken();
 	
+		parseArguments();		
+	}
+
+	match( tc_SEMICOL );
+	getToken();
 }
-void Parser::parseArguments(){
-	
+void Parser::parseArguments()
+{
+		
 }
 void Parser::parseParameterList(){
 	
@@ -89,20 +144,72 @@ void Parser::parseParameterList(){
 void Parser::parseParameterListMore(){
 	
 }
-void Parser::parseIdentifierList(EntryList *eList){
-	
+void Parser::parseIdentifierList(EntryList *eList)
+{
+	match( tc_ID );
+	getToken();
+
+	parseIdentifierListMore(0);// breyta 
 }
-void Parser::parseIdentifierListMore(EntryList *eList){
-	
+void Parser::parseIdentifierListMore(EntryList *eList)
+{
+	while( getTokenCode() == tc_COMMA )
+	{
+		match( tc_COMMA );
+		getToken();
+
+		match( tc_ID );
+		getToken();
+
+	}	
 }
-void Parser::parseIdentifierListAndType(bool subProgramHead){
-	
+void Parser::parseIdentifierListAndType(bool subProgramHead)
+{
+	parseIdentifierList(0);
+
+	match( tc_COLON );
+	getToken();
+
+	parseType();
 }
-void Parser::parseType(){
-	
+void Parser::parseType()
+{
+	if( getTokenCode() == tc_ARRAY )
+	{
+		match( tc_ARRAY );
+		getToken();
+
+		match( tc_LBRACKET );
+		getToken();
+
+		match( tc_NUMBER);
+		getToken();
+
+		match( tc_DOTDOT );
+		getToken();
+
+		match( tc_NUMBER );
+		getToken();
+
+		match( tc_RBRACKET );
+		getToken();
+		
+		match( tc_OF );
+		getToken();
+
+		parseStandardType();
+	}
+	else
+		parseStandardType();
 }
-void Parser::parseStandardType(){
+void Parser::parseStandardType()
+{
+	if( getTokenCode() == tc_INTEGER )
+		match( tc_INTEGER );
+	else
+		match( tc_REAL );
 	
+
 }
 void Parser::parseCompoundStatement(){
 	
