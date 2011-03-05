@@ -72,7 +72,6 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 	
 	return 0; // ?? 
 }
-
 void Parser::parseDeclarations(bool subProgramHead)
 {
 	while( getTokenCode() == tc_VAR )
