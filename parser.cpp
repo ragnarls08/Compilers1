@@ -360,9 +360,18 @@ SymbolTableEntry* Parser::parseExpression()
 
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry){
 
+	SymbolTableEntry* entry = parseExpression();
+	parseExpressionListMore(0);
 }
-void Parser::parseExpressionListMore(EntryList* eList){
 
+void Parser::parseExpressionListMore(EntryList* eList){
+	while( getTokenCode() == tc_COMMA ) {
+		match( tc_COMMA );
+		getToken();
+
+		SymbolTableEntry* entry = parseExpression();
+		parseExpressionListMore(0);
+	}
 }
 
 SymbolTableEntry* Parser::parseSimpleExpression()
