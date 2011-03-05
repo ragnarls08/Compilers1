@@ -60,7 +60,7 @@ void Parser::match( TokenCode tc )
 
 void Parser::parseProgram()
 {
-	parseProgramDefinition();	
+	parseProgramDefinition();
 	parseDeclarations(false); //false?
 	parseSubprogramDeclarations();
 	parseCompoundStatement();
@@ -71,22 +71,22 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 {
 	match( tc_PROGRAM );
 	getToken();
-	
+
 	match( tc_ID );
 	getToken();
 
 	match( tc_LPAREN );
 	getToken();
-	
+
 	parseIdentifierList(0);//breyta í rétt siðar
 
 	match( tc_RPAREN );
-	getToken();	
+	getToken();
 
 	match( tc_SEMICOL );
 	getToken();
-	
-	return 0; // ?? 
+
+	return 0; // ??
 }
 void Parser::parseDeclarations(bool subProgramHead)
 {
@@ -96,7 +96,7 @@ void Parser::parseDeclarations(bool subProgramHead)
 		getToken();
 
 		parseIdentifierListAndType(true);//true?
-	
+
 		match( tc_SEMICOL );
 		getToken();
 	}
@@ -105,17 +105,17 @@ void Parser::parseSubprogramDeclaration()
 {
 	parseSubprogramHead();
 	parseDeclarations(false);///////
-	parseCompoundStatement();	
+	parseCompoundStatement();
 }
 void Parser::parseSubprogramDeclarations()
 {
 	while( getTokenCode() == tc_FUNCTION || getTokenCode() == tc_PROCEDURE )
 	{
 		parseSubprogramDeclaration();
-		
+
 		match( tc_SEMICOL );
 		getToken();
-	}	
+	}
 }
 void Parser::parseSubprogramHead()
 {
@@ -138,11 +138,11 @@ void Parser::parseSubprogramHead()
 	{
 		match( tc_PROCEDURE );
 		getToken();
-		
+
 		match( tc_ID );
 		getToken();
-	
-		parseArguments();		
+
+		parseArguments();
 	}
 
 	match( tc_SEMICOL );
@@ -158,8 +158,8 @@ void Parser::parseArguments()
 		parseParameterList();
 
 		match( tc_RPAREN );
-		getToken();	
-	}	
+		getToken();
+	}
 }
 void Parser::parseParameterList()
 {
@@ -181,7 +181,7 @@ void Parser::parseIdentifierList(EntryList *eList)
 	match( tc_ID );
 	getToken();
 
-	parseIdentifierListMore(0);// breyta 
+	parseIdentifierListMore(0);// breyta
 }
 void Parser::parseIdentifierListMore(EntryList *eList)
 {
@@ -192,8 +192,9 @@ void Parser::parseIdentifierListMore(EntryList *eList)
 
 		match( tc_ID );
 		getToken();
-	}	
+	}
 }
+
 void Parser::parseIdentifierListAndType(bool subProgramHead)
 {
 	parseIdentifierList(0);
@@ -203,6 +204,7 @@ void Parser::parseIdentifierListAndType(bool subProgramHead)
 
 	parseType();
 }
+
 void Parser::parseType()
 {
 	if( getTokenCode() == tc_ARRAY )
@@ -224,7 +226,7 @@ void Parser::parseType()
 
 		match( tc_RBRACKET );
 		getToken();
-		
+
 		match( tc_OF );
 		getToken();
 
@@ -277,16 +279,44 @@ void Parser::parseStatement(){
 
 }
 void Parser::parseIfStatement(){
+    //if expression then statement else statement
+    match(tc_IF);
+    getToken();
 
+    parseExpression();
+
+    match(tc_THEN);
+    getToken();
+
+    parseStatement();
+
+    match(tc_ELSE);
+    getToken();
+
+    parseStatement();
 }
 void Parser::parseWhileStatement(){
+    //while expression do statement
+    match(tc_WHILE);
+    getToken();
 
+    parseExpression();
+
+    match(tc_DO);
+    getToken();
+
+    parseStatement();
 }
 void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry){
 
 }
 
-//vantar
+SymbolTableEntry* Parser::parseExpression()
+{
+    SymbolTableEntry* entry = parseSimpleExpression();
+
+    parseSimpleExpressionRelop(entry);
+}
 
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry){
 
@@ -295,7 +325,39 @@ void Parser::parseExpressionListMore(EntryList* eList){
 
 }
 
-//vantar
+SymbolTableEntry* Parser::parseSimpleExpression()
+{
+    SymbolTableEntry* entry = NULL;
+
+    parseTerm();
+
+    parseSimpleExpressionAddop(entry);
+}
+
+SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry)
+{
+    SymbolTableEntry* entry = NULL;
+
+    if(getTokenCode() == tc_RELOP)
+    {
+        match(tc_RELOP);
+        getToken();
+
+        entry = parseSimpleExpression();
+    }
+
+    return entry;
+}
+
+SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry)
+{
+
+}
+
+SymbolTableEntry* Parser::parseTerm()
+{
+    return NULL;
+}
 
 void Parser::parseArrayReference(){
 
