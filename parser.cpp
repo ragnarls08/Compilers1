@@ -315,18 +315,36 @@ void Parser::parseExpressionListMore(EntryList* eList){
 
 SymbolTableEntry* Parser::parseSimpleExpression()
 {
+    SymbolTableEntry* entry = NULL;
 
+    parseTerm();
+
+    parseSimpleExpressionAddop(entry);
 }
 
 SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry)
 {
+    SymbolTableEntry* entry = NULL;
+
     if(getTokenCode() == tc_RELOP)
     {
         match(tc_RELOP);
         getToken();
 
-        parseSimpleExpression();
+        entry = parseSimpleExpression();
     }
+
+    return entry;
+}
+
+SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry)
+{
+
+}
+
+SymbolTableEntry* Parser::parseTerm()
+{
+    return NULL;
 }
 
 void Parser::parseArrayReference(){
