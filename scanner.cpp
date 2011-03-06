@@ -19,10 +19,12 @@ Scanner::~Scanner()
 
 Token* Scanner::nextToken()
 {
-	TokenCode tCode;
-	tCode = (TokenCode)lexer->yylex();
+	TokenCode tCode = (TokenCode)lexer->yylex();
 
-
+    if(tCode == tc_COMMENT || tCode == tc_SPACE || tCode == tc_NEWLINE)
+    {
+        return nextToken();
+    }
 
 	if( Type == dt_ID ) // identifier
 	{
