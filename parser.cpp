@@ -1,10 +1,10 @@
 #include "parser.h"
 #include <iostream>
-
+#include <list>
 //#define debugOutput
 
 #ifdef debugOutput
-	#define dout  std::cout
+	#define dout  std::cout << "\t"
 #else
 	#define dout  0 && std::cout
 #endif
@@ -27,6 +27,19 @@ Parser::~Parser()
 bool Parser::currIs(TokenCode tc)
 {
 	return getTokenCode() == tc;
+}
+bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
+{
+	for (int i=0; plist[i] != '\0'; ++i)
+		if( plist[i] == tc )
+			return true;
+
+	return false;
+}
+void Parser::recover(const TokenCode* plist)
+{
+	while( !tokenCodeIn(getTokenCode(), plist) )
+		getToken();
 }
 
 void Parser::parse()
@@ -56,20 +69,26 @@ void Parser::getToken()
 }
 void Parser::match( TokenCode tc )
 {
-	Token t = Token();
-	t.setTokenCode(tc);
-
-	if( getTokenCode() != tc )
+	if( !m_parserError )
 	{
-				std::cout << "expected: " << t.tokenCodeToString() <<
-		" Found: " << m_currentToken->tokenCodeToString() << "\n";
-	}
-	else
-	{
-		std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
-	}
+		Token t = Token();
+		t.setTokenCode(tc);
 
-	getToken();
+		if( getTokenCode() != tc )
+		{
+					std::cout << "expected: " << t.tokenCodeToString() <<
+			" Found: " << m_currentToken->tokenCodeToString() << "\n";
+
+			//create sourceline error...
+			m_parserError = true;
+		}
+		else
+		{
+			std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
+		}
+
+		getToken();
+	}
 }
 
 void Parser::parseProgram()
@@ -88,15 +107,10 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 	dout << "parseProgramDefinition\n";
 
 	match( tc_PROGRAM );
-
 	match( tc_ID );
-
 	match( tc_LPAREN );
-
 	parseIdentifierList(0);//breyta í rétt siðar
-
 	match( tc_RPAREN );
-
 	match( tc_SEMICOL );
 
 	return 0; // ??
@@ -187,6 +201,8 @@ void Parser::parseIdentifierList(EntryList *eList)
 
 	match( tc_ID );
 	parseIdentifierListMore(0);// breyta
+	if( m_parserError)
+		dout << "recover meeee....\n";
 }
 void Parser::parseIdentifierListMore(EntryList *eList)
 {

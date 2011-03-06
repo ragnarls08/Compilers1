@@ -12,8 +12,7 @@ using namespace std;
 %}
 
 ws				[ \t]*
-comment			"{".*"}"
-
+comment			\{[^\}]*\}  
 letter			[a-z]
 digit			[0-9]
 id			{letter}({letter}|{digit})*
@@ -57,8 +56,8 @@ program			"program id""("{identifier_list}")"";"{declarations}{subprogram_declar
 {int_num}		{ Oper = op_NONE; Type = dt_INTEGER; return (tc_NUMBER);}
 {real_num}		{ Oper = op_NONE; Type = dt_REAL; return (tc_NUMBER);}
 
-{comment}		{ ;}
-{ws}			{ ;}
+{comment}		{ Oper = op_NONE; Type = dt_NONE; return(tc_COMMENT);}
+{ws}			{ Oper = op_NONE; Type = dt_NONE; return(tc_SPACE);}
 "="				{ Oper = op_EQ; Type = dt_OP; return(tc_RELOP);}
 "<>"			{ Oper = op_NE; Type = dt_OP; return(tc_RELOP);}
 "<"				{ Oper = op_LT; Type = dt_OP; return(tc_RELOP);}
@@ -91,7 +90,7 @@ program			"program id""("{identifier_list}")"";"{declarations}{subprogram_declar
 {id}   			{ Oper = op_NONE; Type = dt_ID ;return(tc_ID);}
 <<EOF>>			{ Oper = op_NONE; Type = dt_NONE; return(tc_EOF);}
 .				{ Oper = op_NONE; Type = dt_NONE; return(tc_ERROR);}
-"\n"			{ ;}
+"\n"			{ Oper = op_NONE; Type = dt_NONE; return(tc_NEWLINE);}
 %%
 
 
