@@ -1,3 +1,3 @@
 #include "sourceline.h"
-
-int LineError::getColumn() {}
+SourceLine::SourceLine(int size) {}
+int LineError::getColumn() {return 0;}

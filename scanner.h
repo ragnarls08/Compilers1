@@ -11,6 +11,7 @@
 
 #include "token.h"
 #include "FlexLexer.h"
+#include "sourceline.h"
 
 extern OpType Oper;
 extern DataType Type;
@@ -48,7 +49,7 @@ private:
 	void	setCurrentToken(TokenCode tc, DataType ty, OpType oper); // sets the corresponding fields in m_currentToken
 	void	setCurrentToken(TokenCode tc, DataType ty, const char* lexeme); // sets the corresponding fields in m_currentToken
 	TokenCode keywordCheck(const char *str);	// returns the appropriate tokencode if str is a keyword, else tc_ID
-	char* currLexeme; //bætt við af gunna
+	SourceLine* sourceline;
 
 public:
 	Scanner();
