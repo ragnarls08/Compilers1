@@ -49,7 +49,8 @@ private:
 	void	setCurrentToken(TokenCode tc, DataType ty, OpType oper); // sets the corresponding fields in m_currentToken
 	void	setCurrentToken(TokenCode tc, DataType ty, const char* lexeme); // sets the corresponding fields in m_currentToken
 	TokenCode keywordCheck(const char *str);	// returns the appropriate tokencode if str is a keyword, else tc_ID
-	SourceLine* sourceline;
+	SourceLine* m_sourceLine;
+	char* lowerCase(const char* str, int size);
 
 public:
 	Scanner();
