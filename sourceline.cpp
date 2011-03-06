@@ -1,1 +1,1 @@
-		
+int LineError::getColumn() {}

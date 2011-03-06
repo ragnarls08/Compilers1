@@ -3,10 +3,10 @@
 
 //#define debugOutput
 
-#ifdef debugOutput 
+#ifdef debugOutput
 	#define dout  std::cout
 #else
-	#define dout  0 && std::cout 
+	#define dout  0 && std::cout
 #endif
 Parser::Parser(bool listing)
 {
@@ -34,6 +34,7 @@ void Parser::parse()
 	//start the parsing
 	getToken();//fetch the first token
 	parseProgram();
+	m_symTab->print();
 }
 
 void Parser::getToken()
@@ -67,7 +68,7 @@ void Parser::match( TokenCode tc )
 	{
 		std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
 	}
-	
+
 	getToken();
 }
 
@@ -274,7 +275,7 @@ void Parser::parseStatement()
 	dout << "parseStatement\n";
 
 	if( currIs(tc_ID) )
-	{	
+	{
 		match( tc_ID );
 		parseIdOrProcedureStatement(0);
 	}
@@ -288,7 +289,7 @@ void Parser::parseStatement()
 void Parser::parseIfStatement()
 {
 	dout << "parseIfStatement\n";
-    
+
 	match(tc_IF);
     parseExpression();
     match(tc_THEN);
@@ -299,7 +300,7 @@ void Parser::parseIfStatement()
 void Parser::parseWhileStatement()
 {
 	dout << "parseWhileStatement\n";
-    
+
 	match(tc_WHILE);
     parseExpression();
     match(tc_DO);
@@ -349,7 +350,7 @@ void Parser::parseExpressionListMore(EntryList* eList)
 {
 	dout << "parseExpressionListMore\n";
 
-	while( currIs(tc_COMMA) ) 
+	while( currIs(tc_COMMA) )
 	{
 		match( tc_COMMA );
 		SymbolTableEntry* entry = parseExpression();
