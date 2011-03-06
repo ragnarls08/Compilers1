@@ -40,8 +40,13 @@ bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 void Parser::recover(const TokenCode* plist)
 {
 	std::cout << "recovering...\n";
-	while( !tokenCodeIn(getTokenCode(), plist) )
+	while( !tokenCodeIn(getTokenCode(), plist) && getTokenCode() != tc_EOF )
 		getToken();
+
+	if( getTokenCode() == tc_SEMICOL )
+		getToken();
+
+	m_parserError = false;	
 }
 
 void Parser::parse()
@@ -98,6 +103,9 @@ void Parser::parseProgram()
 	dout << "parseProgram\n";
 
 	parseProgramDefinition();
+	if( m_parserError )
+		recover( pProgramDefinition );
+
 	parseDeclarations(false); //false?
 	parseSubprogramDeclarations();
 	parseCompoundStatement();
@@ -202,9 +210,6 @@ void Parser::parseIdentifierList(EntryList *eList)
 	dout << "parseIdentifierList\n";
 
 	match( tc_ID );
-	parseIdentifierListMore(0);// breyta
-	if( m_parserError)
-		recover( pIdentifierList );
 }
 void Parser::parseIdentifierListMore(EntryList *eList)
 {
