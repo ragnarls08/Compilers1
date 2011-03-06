@@ -1,7 +1,8 @@
 #include "parser.h"
 #include <iostream>
 #include <list>
-//#define debugOutput
+#include "lists.h"
+#define debugOutput
 
 #ifdef debugOutput 
 	#define dout  std::cout << "\t" 
@@ -38,6 +39,7 @@ bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 }
 void Parser::recover(const TokenCode* plist)
 {
+	std::cout << "recovering...\n";
 	while( !tokenCodeIn(getTokenCode(), plist) )
 		getToken();
 }
@@ -201,7 +203,7 @@ void Parser::parseIdentifierList(EntryList *eList)
 	match( tc_ID );
 	parseIdentifierListMore(0);// breyta
 	if( m_parserError)
-		dout << "recover meeee....\n";
+		recover( pIdentifierList );
 }
 void Parser::parseIdentifierListMore(EntryList *eList)
 {
