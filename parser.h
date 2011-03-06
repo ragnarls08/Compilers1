@@ -24,6 +24,8 @@ private:
 	bool m_parserError;		// Has a parsing error occurred?
 	int  m_totalErrors;		// Total number of errors
 
+	bool currIs(TokenCode tc); // checks if the input tokencode matches the current token
+
 	bool tokenCodeIn(TokenCode tc, const TokenCode *plist);	// Is the given tokencode in the list
 	void recover(const TokenCode *plist);	// keep asking for tokens until token is found in the list
 	void getToken();						// ask lexical analyzer for next token

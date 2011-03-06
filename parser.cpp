@@ -1,6 +1,13 @@
 #include "parser.h"
 #include <iostream>
 
+//#define debugOutput
+
+#ifdef debugOutput 
+	#define dout  std::cout
+#else
+	#define dout  0 && std::cout 
+#endif
 Parser::Parser(bool listing)
 {
 	m_lexan = new Scanner();
@@ -17,6 +24,11 @@ Parser::~Parser()
     delete m_symTab;
 }
 
+bool Parser::currIs(TokenCode tc)
+{
+	return getTokenCode() == tc;
+}
+
 void Parser::parse()
 {
 	//start the parsing
@@ -28,7 +40,7 @@ void Parser::getToken()
 {
 	m_currentToken = m_lexan->nextToken();
 
-	if( m_currentToken->getTokenCode() == tc_ID || m_currentToken->getTokenCode() == tc_NUMBER )
+	if( currIs( tc_ID ) || currIs( tc_NUMBER ) )
     {
         SymbolTableEntry *entry = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
 
@@ -58,22 +70,21 @@ void Parser::match( TokenCode tc )
 	
 	getToken();
 }
-//vantar
 
 void Parser::parseProgram()
 {
-	std::cout << "parseProgram\n";
+	dout << "parseProgram\n";
 
 	parseProgramDefinition();
 	parseDeclarations(false); //false?
 	parseSubprogramDeclarations();
 	parseCompoundStatement();
-
+	match( tc_DOT );
 }
 
 SymbolTableEntry* Parser::parseProgramDefinition()
 {
-	std::cout << "parseProgramDefinition\n";
+	dout << "parseProgramDefinition\n";
 
 	match( tc_PROGRAM );
 
@@ -91,9 +102,9 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 }
 void Parser::parseDeclarations(bool subProgramHead)
 {
-	std::cout << "parseDeclerations\n";
+	dout << "parseDeclerations\n";
 
-	while( getTokenCode() == tc_VAR )
+	while( currIs(tc_VAR) )
 	{
 		match( tc_VAR );
 
@@ -104,7 +115,7 @@ void Parser::parseDeclarations(bool subProgramHead)
 }
 void Parser::parseSubprogramDeclaration()
 {
-	std::cout << "parseSubprogramDecleration\n";
+	dout << "parseSubprogramDecleration\n";
 
 	parseSubprogramHead();
 	parseDeclarations(false);///////
@@ -112,37 +123,30 @@ void Parser::parseSubprogramDeclaration()
 }
 void Parser::parseSubprogramDeclarations()
 {
-	std::cout << "parseSubprogramDeclerations\n";
+	dout << "parseSubprogramDeclerations\n";
 
-	while( getTokenCode() == tc_FUNCTION || getTokenCode() == tc_PROCEDURE )
+	while( currIs(tc_FUNCTION) || currIs(tc_PROCEDURE) )
 	{
 		parseSubprogramDeclaration();
-
 		match( tc_SEMICOL );
 	}
 }
 void Parser::parseSubprogramHead()
 {
-	std::cout << "parseSubprogramHead\n";
+	dout << "parseSubprogramHead\n";
 
-	if( getTokenCode() == tc_FUNCTION )
+	if( currIs(tc_FUNCTION) )
 	{
 		match( tc_FUNCTION );
-
 		match( tc_ID );
-
 		parseArguments();
-
 		match( tc_COLON );
-
 		parseStandardType();
 	}
 	else
 	{
 		match( tc_PROCEDURE );
-
 		match( tc_ID );
-
 		parseArguments();
 	}
 
@@ -150,71 +154,64 @@ void Parser::parseSubprogramHead()
 }
 void Parser::parseArguments()
 {
-	std::cout << "parseArguements\n";
+	dout << "parseArguements\n";
 
-	if( getTokenCode() == tc_LPAREN )
+	if( currIs(tc_LPAREN) )
 	{
 		match( tc_LPAREN );
-
 		parseParameterList();
-
 		match( tc_RPAREN );
 	}
 }
 void Parser::parseParameterList()
 {
-	std::cout << "parseParameterList\n";
+	dout << "parseParameterList\n";
 
 	parseIdentifierListAndType(false);
 	parseParameterListMore();
 }
 void Parser::parseParameterListMore()
 {
-	std::cout << "parseParameterListMore\n";
+	dout << "parseParameterListMore\n";
 
-	while( getTokenCode() == tc_SEMICOL )
+	while( currIs(tc_SEMICOL) )
 	{
 		match( tc_SEMICOL );
-
 		parseIdentifierListAndType(false);
 	}
 }
 void Parser::parseIdentifierList(EntryList *eList)
 {
-	std::cout << "parseIdentifierList\n";
+	dout << "parseIdentifierList\n";
 
 	match( tc_ID );
-
 	parseIdentifierListMore(0);// breyta
 }
 void Parser::parseIdentifierListMore(EntryList *eList)
 {
-	std::cout << "parseIdentifierListMore\n";
+	dout << "parseIdentifierListMore\n";
 
-	while( getTokenCode() == tc_COMMA )
+	while( currIs(tc_COMMA) )
 	{
 		match( tc_COMMA );
-
 		match( tc_ID );
 	}
 }
 
 void Parser::parseIdentifierListAndType(bool subProgramHead)
 {
-	std::cout << "parseIdentifierListAndType\n";
+	dout << "parseIdentifierListAndType\n";
 
 	parseIdentifierList(0);
-std::cout << "201\n";
 	match( tc_COLON );
-
 	parseType();
 }
 
 void Parser::parseType()
 {
-	std::cout << "parseType\n";
+	dout << "parseType\n";
 
-	if( getTokenCode() == tc_ARRAY )
+	if( currIs(tc_ARRAY) )
 	{
 		match( tc_ARRAY );
 		match( tc_LBRACKET );
@@ -231,16 +228,16 @@ void Parser::parseType()
 }
 void Parser::parseStandardType()
 {
-	std::cout << "parseStandardType\n";
+	dout << "parseStandardType\n";
 
-	if( getTokenCode() == tc_INTEGER )
+	if( currIs(tc_INTEGER) )
 		match( tc_INTEGER );
 	else
 		match( tc_REAL );
 }
 void Parser::parseCompoundStatement()
 {
-	std::cout << "parseCompoundStatement\n";
+	dout << "parseCompoundStatement\n";
 
 	match( tc_BEGIN );
 
@@ -250,52 +247,49 @@ void Parser::parseCompoundStatement()
 }
 void Parser::parseOptionalStatement()
 {
-	std::cout << "parseOptionalStatement\n";
+	dout << "parseOptionalStatement\n";
 
-	if( getTokenCode() == tc_BEGIN || getTokenCode() == tc_ID 
-		|| getTokenCode() == tc_IF || getTokenCode() == tc_WHILE )
+	if( currIs(tc_BEGIN) || currIs(tc_ID) || currIs(tc_IF) || currIs(tc_WHILE) )
 		parseStatementList();
 }
 void Parser::parseStatementList()
 {
-	std::cout << "parseStatementList\n";
+	dout << "parseStatementList\n";
 
 	parseStatement();
 	parseStatementListMore();
 }
 void Parser::parseStatementListMore()
 {
-	std::cout << "parseStatementListMore\n";
+	dout << "parseStatementListMore\n";
 
-	while( getTokenCode() == tc_SEMICOL )
+	while( currIs(tc_SEMICOL) )
 	{
 		match( tc_SEMICOL );
-
-		parseIdentifierListAndType(false);
+		parseStatement();
 	}
 }
 void Parser::parseStatement()
 {
-	std::cout << "parseStatement\n";
+	dout << "parseStatement\n";
 
-	if( getTokenCode() == tc_ID )
+	if( currIs(tc_ID) )
 	{	
 		match( tc_ID );
-		
 		parseIdOrProcedureStatement(0);
 	}
-	else if( getTokenCode() == tc_IF )
+	else if( currIs(tc_IF) )
 		parseIfStatement();
-	else if( getTokenCode() == tc_WHILE )
+	else if( currIs(tc_WHILE) )
 		parseWhileStatement();
 	else
 		parseCompoundStatement();
 }
 void Parser::parseIfStatement()
 {
-	std::cout << "parseIfStatement\n";
-    //if expression then statement else statement
-    match(tc_IF);
+	dout << "parseIfStatement\n";
+    
+	match(tc_IF);
     parseExpression();
     match(tc_THEN);
     parseStatement();
@@ -304,29 +298,29 @@ void Parser::parseIfStatement()
 }
 void Parser::parseWhileStatement()
 {
-	std::cout << "parseWhileStatement\n";
-    //while expression do statement
-    match(tc_WHILE);
+	dout << "parseWhileStatement\n";
+    
+	match(tc_WHILE);
     parseExpression();
     match(tc_DO);
     parseStatement();
 }
 void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry)
 {
-	std::cout << "parseIdOrProcedureStatement\n";
+	dout << "parseIdOrProcedureStatement\n";
 
-	if( getTokenCode() == tc_ASSIGNOP )
+	if( currIs(tc_ASSIGNOP) )
 	{
 		match( tc_ASSIGNOP );
 		parseExpression();
 	}
-	else if( getTokenCode() == tc_LPAREN )
+	else if( currIs(tc_LPAREN) )
 	{
 		match( tc_LPAREN );
 		parseExpressionList(0);
 		match( tc_RPAREN );
 	}
-	else if( getTokenCode() == tc_LBRACKET )
+	else if( currIs(tc_LBRACKET) )
 	{
 		parseArrayReference();
 		match( tc_ASSIGNOP );
@@ -337,16 +331,15 @@ void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry)
 
 SymbolTableEntry* Parser::parseExpression()
 {
-	std::cout << "parseExpression\n";
+	dout << "parseExpression\n";
 
     SymbolTableEntry* entry = parseSimpleExpression();
-
     parseSimpleExpressionRelop(entry);
 }
 
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
 {
-	std::cout << "parseExpressionList\n";
+	dout << "parseExpressionList\n";
 
 	SymbolTableEntry* entry = parseExpression();
 	parseExpressionListMore(0);
@@ -354,9 +347,9 @@ void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
 
 void Parser::parseExpressionListMore(EntryList* eList)
 {
-	std::cout << "parseExpressionListMore\n";
+	dout << "parseExpressionListMore\n";
 
-	while( getTokenCode() == tc_COMMA ) 
+	while( currIs(tc_COMMA) ) 
 	{
 		match( tc_COMMA );
 		SymbolTableEntry* entry = parseExpression();
@@ -365,11 +358,11 @@ void Parser::parseExpressionListMore(EntryList* eList)
 
 SymbolTableEntry* Parser::parseSimpleExpression()
 {
-	std::cout << "parseSimpleExrpession\n";
+	dout << "parseSimpleExrpession\n";
 
     SymbolTableEntry* entry = NULL;
 
-	if( getTokenCode() == tc_ADDOP )
+	if( currIs(tc_ADDOP) )
 		match( tc_ADDOP );
 
 	parseTerm();
@@ -378,11 +371,11 @@ SymbolTableEntry* Parser::parseSimpleExpression()
 
 SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry)
 {
-	std::cout << "parseSimpleExrpessionRelop\n";
+	dout << "parseSimpleExrpessionRelop\n";
 
     SymbolTableEntry* entry = NULL;
 
-    if(getTokenCode() == tc_RELOP)
+    if( currIs(tc_RELOP) )
     {
         match(tc_RELOP);
         entry = parseSimpleExpression();
@@ -393,9 +386,9 @@ SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry
 
 SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry)
 {
-	std::cout << "parseSimpleExrepssionAddop\n";
+	dout << "parseSimpleExrepssionAddop\n";
 
-	if( getTokenCode() == tc_ADDOP )
+	if( currIs(tc_ADDOP) )
 	{
 		match( tc_ADDOP );
 
@@ -406,7 +399,7 @@ SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry
 
 SymbolTableEntry* Parser::parseTerm()
 {
-	std::cout << "parseTerm\n";
+	dout << "parseTerm\n";
 
 	parseFactor();
 	parseTermRest(0);
@@ -416,7 +409,7 @@ SymbolTableEntry* Parser::parseTerm()
 
 void Parser::parseArrayReference()
 {
-	std::cout << "parseArrayReference\n";
+	dout << "parseArrayReference\n";
 
 	match( tc_LBRACKET );
 	parseExpression();
@@ -424,20 +417,20 @@ void Parser::parseArrayReference()
 }
 SymbolTableEntry* Parser::parseFactor()
 {
-	std::cout << "parseFactor\n";
+	dout << "parseFactor\n";
 
-	if( getTokenCode() == tc_ID )
+	if( currIs(tc_ID) )
 	{
 		match( tc_ID );
 		parseFactorRest(0);
 	}
-	else if( getTokenCode() == tc_LPAREN )
+	else if( currIs(tc_LPAREN) )
 	{
 		match( tc_LPAREN );
 		parseExpression();
 		match( tc_RPAREN );
 	}
-	else if( getTokenCode() == tc_NOT )
+	else if( currIs(tc_NOT) )
 	{
 		match( tc_NOT );
 		parseFactor();
@@ -447,22 +440,22 @@ SymbolTableEntry* Parser::parseFactor()
 }
 SymbolTableEntry* Parser::parseFactorRest(SymbolTableEntry* prevEntry)
 {
-	std::cout << "parseFactorRest\n";
+	dout << "parseFactorRest\n";
 
-	if( getTokenCode() == tc_LPAREN )
+	if( currIs(tc_LPAREN) )
 	{
 		match( tc_LPAREN );
 		parseExpressionList(0);
 		match( tc_RPAREN );
 	}
-	else if( getTokenCode() == tc_LBRACKET )
+	else if( currIs(tc_LBRACKET) )
 		parseArrayReference();
 }
 SymbolTableEntry* Parser::parseTermRest(SymbolTableEntry* prevEntry)
 {
-	std::cout << "parseTermRest\n";
+	dout << "parseTermRest\n";
 
-	while( getTokenCode() == tc_MULOP )
+	while( currIs(tc_MULOP) )
 	{
 		match( tc_MULOP );
 		parseFactor();
