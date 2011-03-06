@@ -50,7 +50,10 @@ enum TokenCode {
 	tc_WHILE,
     tc_DO,
     tc_NOT,
-	tc_NONE
+	tc_NONE,
+	tc_COMMENT,
+	tc_NEWLINE,
+	tc_SPACE
 };
 
 enum DataType {
