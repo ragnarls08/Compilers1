@@ -54,6 +54,7 @@ void Parser::parse()
 	//start the parsing
 	getToken();//fetch the first token
 	parseProgram();
+	std::cout << "Symbol Table entries: " << '\n';
 	m_symTab->print();
 }
 
@@ -91,7 +92,7 @@ void Parser::match( TokenCode tc )
 		}
 		else
 		{
-			std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
+			//std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
 		}
 
 		getToken();
