@@ -23,11 +23,11 @@ struct keyWord {
 static keyWord keyWords[] = {             /* Reserved words */
 	{"program", tc_PROGRAM },
 	{"var", tc_VAR },
-	{"array", tc_ARRAY}, 
+	{"array", tc_ARRAY},
 	{"of", tc_OF},
 	{"integer", tc_INTEGER},
 	{"real", tc_REAL},
-	{"function", tc_FUNCTION}, 
+	{"function", tc_FUNCTION},
 	{"procedure", tc_PROCEDURE},
 	{"begin", tc_BEGIN},
 	{"end", tc_END},
@@ -48,12 +48,13 @@ private:
 	void	setCurrentToken(TokenCode tc, DataType ty, OpType oper); // sets the corresponding fields in m_currentToken
 	void	setCurrentToken(TokenCode tc, DataType ty, const char* lexeme); // sets the corresponding fields in m_currentToken
 	TokenCode keywordCheck(const char *str);	// returns the appropriate tokencode if str is a keyword, else tc_ID
-											
+	char* currLexeme; //bætt við af gunna
+
 public:
 	Scanner();
 	~Scanner();
-	Token* nextToken();				// returns the next token from FlexLexer	
-	
+	Token* nextToken();				// returns the next token from FlexLexer
+
 };
 
 
