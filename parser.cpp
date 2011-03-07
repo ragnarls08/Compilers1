@@ -4,7 +4,7 @@
 #include "lists.h"
 #include <string>
 
-//#define debugOutput
+#define debugOutput
 
 #ifdef debugOutput
 	#define dout  std::cout << "\t"
@@ -40,10 +40,16 @@ bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 }
 void Parser::recover(const TokenCode* plist)
 {
-	std::cout << "recovering...\n";
-	while( !tokenCodeIn(getTokenCode(), plist) && getTokenCode() != tc_EOF )
+	std::cout << "recovering " << getTokenCode() << "\n";
+	while( !tokenCodeIn(getTokenCode(), plist) )
+	{
+		if( getTokenCode() == tc_EOF )
+		{
+			std::cout << tc_EOF << "\n";
+			break;
+		}
 		getToken();
-
+	}
 	if( getTokenCode() == tc_SEMICOL )
 				getToken();
 
@@ -63,6 +69,7 @@ void Parser::getToken()
 {
 	m_currentToken = m_lexan->nextToken();
 
+	std::cout << "lasdf ---- " << getTokenCode() << "\n";
 	if( currIs( tc_ID ) || currIs( tc_NUMBER ) )
     {
         SymbolTableEntry *entry = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
@@ -92,7 +99,6 @@ void Parser::match( TokenCode tc )
 	{
 		if( getTokenCode() != tc )
 		{
-			std::cout << tc << "\n";
 			expectedTokenCode(tc);
 			m_parserError = true;
 		}
@@ -550,7 +556,7 @@ SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry
 			recover( pTerm );
 		parseSimpleExpressionAddop(0);
 		if( m_parserError )
-			recover( pExpressionAddop );
+			recover( pSimpleExpressionAddop );
 	}
 }
 
