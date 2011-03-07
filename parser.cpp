@@ -4,7 +4,7 @@
 #include "lists.h"
 #include <string>
 
-//#define debugOutput
+#define debugOutput
 
 #ifdef debugOutput
 	#define dout  std::cout << "\t"
@@ -40,10 +40,16 @@ bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 }
 void Parser::recover(const TokenCode* plist)
 {
-	std::cout << "recovering...\n";
-	while( !tokenCodeIn(getTokenCode(), plist) && getTokenCode() != tc_EOF )
+	std::cout << "recovering " << getTokenCode() << "\n";
+	while( !tokenCodeIn(getTokenCode(), plist) )
+	{
+		if( getTokenCode() == tc_EOF )
+		{
+			std::cout << tc_EOF << "\n";
+			break;
+		}
 		getToken();
-
+	}
 	if( getTokenCode() == tc_SEMICOL )
 				getToken();
 
@@ -55,14 +61,15 @@ void Parser::parse()
 	//start the parsing
 	getToken();//fetch the first token
 	parseProgram();
-	std::cout << "Symbol Table entries: " << '\n';
-	m_symTab->print();
+//	std::cout << "Symbol Table entries: " << '\n';
+//	m_symTab->print();
 }
 
 void Parser::getToken()
 {
 	m_currentToken = m_lexan->nextToken();
 
+	std::cout << "lasdf ---- " << getTokenCode() << "\n";
 	if( currIs( tc_ID ) || currIs( tc_NUMBER ) )
     {
         SymbolTableEntry *entry = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
@@ -85,7 +92,6 @@ void Parser::expectedTokenCode(TokenCode tc)
 	str->append(  t.tokenCodeToString() );
 
 	m_lexan->setError( (char*)str->c_str() );	
-//	m_lexan->setError( (char*)"raggibesti" );	
 }
 void Parser::match( TokenCode tc )
 {
@@ -96,8 +102,8 @@ void Parser::match( TokenCode tc )
 			expectedTokenCode(tc);
 			m_parserError = true;
 		}
-
-		getToken();
+		else
+			getToken();
 	}
 }
 
@@ -359,12 +365,14 @@ void Parser::parseStatementListMore()
 {
 	dout << "parseStatementListMore\n";
 
-	while( currIs(tc_SEMICOL) )
+	if( currIs(tc_SEMICOL) )
 	{
 		match( tc_SEMICOL );
 		parseStatement();
 		if( m_parserError )
 			recover( pStatement );
+	
+		parseStatementListMore();
 	}
 }
 void Parser::parseStatement()
@@ -379,17 +387,23 @@ void Parser::parseStatement()
 			recover( pIdOrProcedureStatement );
 	}
 	else if( currIs(tc_IF) )
+	{
 		parseIfStatement();
 		if( m_parserError )
 			recover( pIfStatement );
+	}
 	else if( currIs(tc_WHILE) )
+	{
 		parseWhileStatement();
 		if( m_parserError )
 			recover( pWhileStatement );
+	}
 	else
+	{
 		parseCompoundStatement();
 		if( m_parserError )
 			recover( pCompoundStatement );
+	}
 }
 void Parser::parseIfStatement()
 {
@@ -542,7 +556,7 @@ SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry
 			recover( pTerm );
 		parseSimpleExpressionAddop(0);
 		if( m_parserError )
-			recover( pExpressionAddop );
+			recover( pSimpleExpressionAddop );
 	}
 }
 
