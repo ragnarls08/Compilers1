@@ -46,7 +46,7 @@ void Parser::recover(const TokenCode* plist)
 	if( getTokenCode() == tc_SEMICOL )
 		getToken();
 
-	m_parserError = false;	
+	m_parserError = false;
 }
 
 void Parser::parse()
