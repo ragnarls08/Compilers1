@@ -25,33 +25,38 @@ TokenCode pCompoundStatement[1] = {tc_DOT, tc_SEMICOL, (TokenCode)'\0'};
 TokenCode pOptionalStatement[1] = {tc_END, (TokenCode)'\0'};
 TokenCode pStatementList[1] = {tc_END, (TokenCode)'\0'};
 TokenCode pStatementListMore[1] = {tc_END, (TokenCode)'\0'};
-TokenCode pStatement[1] = {tc_END, tc_SEMICOL, (TokenCode)'\0'};
+TokenCode pStatement[1] = {tc_END, tc_SEMICOL, tc_ELSE (TokenCode)'\0'};
 
-TokenCode pArrayReference[1] = {tc_ASSIGNOP, tc_MULOP, tc_ADDOP, tc_RPAREN, (TokenCode)'\0'};
-TokenCode pIdOrProcedureStatement[1] = {tc_END, tc_SEMICOL, (TokenCode)'\0'};
+TokenCode pArrayReference[1] = {tc_ASSIGNOP, tc_MULOP, tc_ADDOP, tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, tc_ELSE, (TokenCode)'\0'};
+TokenCode pIdOrProcedureStatement[1] = {tc_END, tc_SEMICOL, tc_ELSE, (TokenCode)'\0'};
 
 TokenCode pExpressionList[1] = {tc_RPAREN, (TokenCode)'\0'};
 TokenCode pExpressionListMore[1] = {tc_RPAREN, (TokenCode)'\0'};
-TokenCode pExpression[1] = {tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, (TokenCode)'\0'};
+TokenCode pExpression[1] = {tc_RPAREN, tc_COMMA, tc_ELSE, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, (TokenCode)'\0'};
 
-TokenCode pSimpleExpressionRelop[1] = {tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, (TokenCode)'\0'};
-TokenCode pSimpleExpression[1] = {tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, (TokenCode)'\0'};
+TokenCode pSimpleExpressionRelop[1] = {tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_ELSE, (TokenCode)'\0'};
+TokenCode pSimpleExpression[1] = {tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, tc_ELSE, (TokenCode)'\0'};
 TokenCode pSimpleExpressionAddop[1] = {tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP,(TokenCode)'\0'};
 
 
 
+TokenCode pTerm[1] = {tc_ADDOP, tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, tc_ELSE, (TokenCode)'\0'};
+TokenCode pTermRest[1] = {tc_ADDOP, tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, tc_ELSE, (TokenCode)'\0'};
 
 
-TokenCode pFactor[1] = {(TokenCode)'\0'};
-TokenCode pFactorRest[1] = {(TokenCode)'\0'};
-TokenCode pTerm[1] = {(TokenCode)'\0'};
-TokenCode pTermRest[1] = {(TokenCode)'\0'};
+TokenCode pFactor[1] = {tc_ADDOP, tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, tc_ELSE, (TokenCode)'\0'};
+TokenCode pFactorRest[1] = {tc_ADDOP, tc_RPAREN, tc_COMMA, tc_END, tc_SEMICOL, tc_RBRACKET, tc_DO, tc_THEN, tc_RELOP, tc_ELSE, (TokenCode)'\0'};
 
-TokenCode pExpressionAddop[1] = {(TokenCode)'\0'};
+
+
+
 
 TokenCode pIfStatement[1] = {(TokenCode)'\0'};
 TokenCode pWhileStatement[1] = {(TokenCode)'\0'};
 
+
+
+//TokenCode pExpressionAddop[1] = {(TokenCode)'\0'};
 
 
 
