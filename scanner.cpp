@@ -20,7 +20,10 @@ Scanner::Scanner()
 }
 Scanner::~Scanner()
 {}
-
+void Scanner::setError(char* msg)
+{
+	m_sourceLine->setError(msg);
+}
 Token* Scanner::nextToken()
 {
 	TokenCode tCode = (TokenCode)lexer->yylex();
@@ -43,6 +46,10 @@ Token* Scanner::nextToken()
     {
         return nextToken();
     }
+	if(tCode == tc_ERROR)
+	{
+		m_sourceLine->setError( (char*)"Illegal character");	
+	}
 
 	if( tCode == tc_ID ) // identifier
 	{

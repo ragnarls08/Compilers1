@@ -57,6 +57,8 @@ public:
 	~Scanner();
 	Token* nextToken();				// returns the next token from FlexLexer
 
+	void setError(char* msg);
+
 };
 
 
