@@ -11,6 +11,7 @@
 
 #define MAX_ERRORS_IN_LINE 10
 
+#include <string>
 
 class LineError
 {
@@ -27,7 +28,7 @@ public:
 class SourceLine {
 
 private:
-	char*	m_line;				// Characters in current line 
+	std::string*	m_line;				// Characters in current line 
 	int		m_firstLexemeColumn;	// First column number of current lexeme
 	int		m_lastLexemeColumn;	// Last column number of current lexeme
 	int		m_lineNo;			// Line number in original source

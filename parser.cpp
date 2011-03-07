@@ -2,7 +2,9 @@
 #include <iostream>
 #include <list>
 #include "lists.h"
-#define debugOutput
+#include <string>
+
+//#define debugOutput
 
 #ifdef debugOutput
 	#define dout  std::cout << "\t"
@@ -16,7 +18,6 @@ Parser::Parser(bool listing)
 
 	m_parserError = false;
 	m_totalErrors = 0;
-
 }
 
 Parser::~Parser()
@@ -44,7 +45,7 @@ void Parser::recover(const TokenCode* plist)
 		getToken();
 
 	if( getTokenCode() == tc_SEMICOL )
-		getToken();
+				getToken();
 
 	m_parserError = false;	
 }
@@ -75,24 +76,25 @@ void Parser::getToken()
         m_currentToken->setSymTabEntry( entry );
     }
 }
+void Parser::expectedTokenCode(TokenCode tc)
+{
+	Token t = Token();
+	t.setTokenCode(tc);
+
+	std::string *str = new std::string( "Expected " );
+	str->append(  t.tokenCodeToString() );
+
+	m_lexan->setError( (char*)str->c_str() );	
+//	m_lexan->setError( (char*)"raggibesti" );	
+}
 void Parser::match( TokenCode tc )
 {
 	if( !m_parserError )
 	{
-		Token t = Token();
-		t.setTokenCode(tc);
-
 		if( getTokenCode() != tc )
 		{
-					std::cout << "expected: " << t.tokenCodeToString() <<
-			" Found: " << m_currentToken->tokenCodeToString() << "\n";
-
-			//create sourceline error...
+			expectedTokenCode(tc);
 			m_parserError = true;
-		}
-		else
-		{
-			//std::cout << "matched: " << m_currentToken->tokenCodeToString() << "\n";
 		}
 
 		getToken();
@@ -108,8 +110,17 @@ void Parser::parseProgram()
 		recover( pProgramDefinition );
 
 	parseDeclarations(false); //false?
+	if( m_parserError )
+		recover( pDeclarations );
+
 	parseSubprogramDeclarations();
+	if( m_parserError )
+		recover( pSubprogramDeclarations );
+
 	parseCompoundStatement();
+	if( m_parserError )
+		recover( pCompoundStatement );
+
 	match( tc_DOT );
 }
 
@@ -121,6 +132,8 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 	match( tc_ID );
 	match( tc_LPAREN );
 	parseIdentifierList(0);//breyta í rétt siðar
+	if( m_parserError )
+		recover( pIdentifierList );
 	match( tc_RPAREN );
 	match( tc_SEMICOL );
 
@@ -130,13 +143,19 @@ void Parser::parseDeclarations(bool subProgramHead)
 {
 	dout << "parseDeclerations\n";
 
-	while( currIs(tc_VAR) )
+	if( currIs(tc_VAR) )
 	{
 		match( tc_VAR );
 
 		parseIdentifierListAndType(true);//true?
+		if( m_parserError )
+			recover( pIdentifierListAndType );
 
 		match( tc_SEMICOL );
+
+		parseDeclarations(false);
+		if( m_parserError )
+			recover( pDeclarations );
 	}
 }
 void Parser::parseSubprogramDeclaration()
@@ -144,17 +163,31 @@ void Parser::parseSubprogramDeclaration()
 	dout << "parseSubprogramDecleration\n";
 
 	parseSubprogramHead();
+	if( m_parserError )
+		recover( pSubprogramHead );
+
 	parseDeclarations(false);///////
+	if( m_parserError )
+		recover( pDeclarations );
+
 	parseCompoundStatement();
+	if( m_parserError )
+		recover( pCompoundStatement );
 }
 void Parser::parseSubprogramDeclarations()
 {
 	dout << "parseSubprogramDeclerations\n";
 
-	while( currIs(tc_FUNCTION) || currIs(tc_PROCEDURE) )
+	if( currIs(tc_FUNCTION) || currIs(tc_PROCEDURE) )
 	{
 		parseSubprogramDeclaration();
+		if( m_parserError )
+			recover( pSubprogramDeclaration );
 		match( tc_SEMICOL );
+
+		parseSubprogramDeclarations();
+		if( m_parserError )
+			recover( pSubprogramDeclarations );
 	}
 }
 void Parser::parseSubprogramHead()
@@ -166,14 +199,20 @@ void Parser::parseSubprogramHead()
 		match( tc_FUNCTION );
 		match( tc_ID );
 		parseArguments();
+		if( m_parserError )
+			recover( pArguments );
 		match( tc_COLON );
 		parseStandardType();
+		if( m_parserError )
+			recover( pStandardType );
 	}
 	else
 	{
 		match( tc_PROCEDURE );
 		match( tc_ID );
 		parseArguments();
+		if( m_parserError )
+			recover( pArguments );
 	}
 
 	match( tc_SEMICOL );
@@ -186,6 +225,8 @@ void Parser::parseArguments()
 	{
 		match( tc_LPAREN );
 		parseParameterList();
+		if( m_parserError )
+			recover( pParameterList );
 		match( tc_RPAREN );
 	}
 }
@@ -194,16 +235,25 @@ void Parser::parseParameterList()
 	dout << "parseParameterList\n";
 
 	parseIdentifierListAndType(false);
+	if( m_parserError )
+		recover( pIdentifierListAndType );
 	parseParameterListMore();
+	if( m_parserError )
+		recover( pParameterListMore );
 }
 void Parser::parseParameterListMore()
 {
 	dout << "parseParameterListMore\n";
 
-	while( currIs(tc_SEMICOL) )
+	if( currIs(tc_SEMICOL) )
 	{
 		match( tc_SEMICOL );
 		parseIdentifierListAndType(false);
+		if( m_parserError )
+			recover( pIdentifierListAndType );	
+		parseParameterListMore();
+		if( m_parserError )	
+			recover( pParameterListMore );
 	}
 }
 void Parser::parseIdentifierList(EntryList *eList)
@@ -211,15 +261,22 @@ void Parser::parseIdentifierList(EntryList *eList)
 	dout << "parseIdentifierList\n";
 
 	match( tc_ID );
+	parseIdentifierListMore(0);
+	if( m_parserError )
+		recover( pIdentifierListMore );
 }
 void Parser::parseIdentifierListMore(EntryList *eList)
 {
 	dout << "parseIdentifierListMore\n";
 
-	while( currIs(tc_COMMA) )
+	if( currIs(tc_COMMA) )
 	{
 		match( tc_COMMA );
 		match( tc_ID );
+	
+		parseIdentifierListMore(0);
+		if( m_parserError )
+			recover( pIdentifierListMore );
 	}
 }
 
@@ -228,8 +285,12 @@ void Parser::parseIdentifierListAndType(bool subProgramHead)
 	dout << "parseIdentifierListAndType\n";
 
 	parseIdentifierList(0);
+	if( m_parserError )
+		recover( pIdentifierList );
 	match( tc_COLON );
 	parseType();
+	if( m_parserError )
+		recover( pType );
 }
 
 void Parser::parseType()
@@ -245,11 +306,11 @@ void Parser::parseType()
 		match( tc_NUMBER );
 		match( tc_RBRACKET );
 		match( tc_OF );
-
-		parseStandardType();
 	}
-	else
-		parseStandardType();
+
+	parseStandardType();
+	if( m_parserError )
+		recover( pStandardType );
 }
 void Parser::parseStandardType()
 {
@@ -267,6 +328,8 @@ void Parser::parseCompoundStatement()
 	match( tc_BEGIN );
 
 	parseOptionalStatement();
+	if( m_parserError )
+		recover( pOptionalStatement );
 
 	match( tc_END );
 }
@@ -275,14 +338,22 @@ void Parser::parseOptionalStatement()
 	dout << "parseOptionalStatement\n";
 
 	if( currIs(tc_BEGIN) || currIs(tc_ID) || currIs(tc_IF) || currIs(tc_WHILE) )
+	{
 		parseStatementList();
+		if( m_parserError )
+			recover( pStatementList );
+	}
 }
 void Parser::parseStatementList()
 {
 	dout << "parseStatementList\n";
 
 	parseStatement();
+	if( m_parserError )
+		recover( pStatement );
 	parseStatementListMore();
+	if( m_parserError )
+		recover( pStatementListMore );
 }
 void Parser::parseStatementListMore()
 {
@@ -292,6 +363,8 @@ void Parser::parseStatementListMore()
 	{
 		match( tc_SEMICOL );
 		parseStatement();
+		if( m_parserError )
+			recover( pStatement );
 	}
 }
 void Parser::parseStatement()
@@ -302,13 +375,21 @@ void Parser::parseStatement()
 	{
 		match( tc_ID );
 		parseIdOrProcedureStatement(0);
+		if( m_parserError )
+			recover( pIdOrProcedureStatement );
 	}
 	else if( currIs(tc_IF) )
 		parseIfStatement();
+		if( m_parserError )
+			recover( pIfStatement );
 	else if( currIs(tc_WHILE) )
 		parseWhileStatement();
+		if( m_parserError )
+			recover( pWhileStatement );
 	else
 		parseCompoundStatement();
+		if( m_parserError )
+			recover( pCompoundStatement );
 }
 void Parser::parseIfStatement()
 {
@@ -316,10 +397,16 @@ void Parser::parseIfStatement()
 
 	match(tc_IF);
     parseExpression();
+	if( m_parserError )
+		recover( pExpression );
     match(tc_THEN);
     parseStatement();
+	if( m_parserError )
+		recover( pStatement );
     match(tc_ELSE);
     parseStatement();
+	if( m_parserError )
+		recover( pStatement );
 }
 void Parser::parseWhileStatement()
 {
@@ -327,8 +414,12 @@ void Parser::parseWhileStatement()
 
 	match(tc_WHILE);
     parseExpression();
+	if( m_parserError )
+		recover( pExpression );
     match(tc_DO);
     parseStatement();
+	if( m_parserError )
+		recover( pStatement );
 }
 void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry)
 {
@@ -338,18 +429,27 @@ void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry)
 	{
 		match( tc_ASSIGNOP );
 		parseExpression();
+		if( m_parserError )
+			recover( pExpression );
 	}
 	else if( currIs(tc_LPAREN) )
 	{
 		match( tc_LPAREN );
 		parseExpressionList(0);
+		if( m_parserError )
+			recover( pExpressionList );
 		match( tc_RPAREN );
 	}
 	else if( currIs(tc_LBRACKET) )
 	{
 		parseArrayReference();
+		if( m_parserError )
+			recover( pArrayReference );
+
 		match( tc_ASSIGNOP );
 		parseExpression();
+		if( m_parserError )
+			recover( pExpression );
 	}
 	//else empty
 }
@@ -359,7 +459,11 @@ SymbolTableEntry* Parser::parseExpression()
 	dout << "parseExpression\n";
 
     SymbolTableEntry* entry = parseSimpleExpression();
+	if( m_parserError )
+		recover( pSimpleExpression );
     parseSimpleExpressionRelop(entry);
+	if( m_parserError )
+		recover( pSimpleExpressionRelop );
 }
 
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
@@ -367,17 +471,27 @@ void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
 	dout << "parseExpressionList\n";
 
 	SymbolTableEntry* entry = parseExpression();
+	if( m_parserError )	
+		recover( pExpression );
 	parseExpressionListMore(0);
+	if( m_parserError )
+		recover( pExpressionListMore );
 }
 
 void Parser::parseExpressionListMore(EntryList* eList)
 {
 	dout << "parseExpressionListMore\n";
 
-	while( currIs(tc_COMMA) )
+	if( currIs(tc_COMMA) )
 	{
 		match( tc_COMMA );
 		SymbolTableEntry* entry = parseExpression();
+		if( m_parserError )
+			recover( pExpression );
+
+		parseExpressionListMore(0);
+		if( m_parserError )
+			recover( pExpressionListMore );
 	}
 }
 
@@ -391,7 +505,11 @@ SymbolTableEntry* Parser::parseSimpleExpression()
 		match( tc_ADDOP );
 
 	parseTerm();
+	if( m_parserError )	
+		recover( pTerm );
     parseSimpleExpressionAddop(entry);
+	if( m_parserError )
+		recover( pSimpleExpressionAddop );
 }
 
 SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry)
@@ -404,6 +522,8 @@ SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry
     {
         match(tc_RELOP);
         entry = parseSimpleExpression();
+		if( m_parserError )
+			recover( pSimpleExpression );
     }
 
     return entry;
@@ -418,7 +538,11 @@ SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry
 		match( tc_ADDOP );
 
 		parseTerm();
+		if( m_parserError )
+			recover( pTerm );
 		parseSimpleExpressionAddop(0);
+		if( m_parserError )
+			recover( pExpressionAddop );
 	}
 }
 
@@ -427,7 +551,11 @@ SymbolTableEntry* Parser::parseTerm()
 	dout << "parseTerm\n";
 
 	parseFactor();
+	if( m_parserError )
+		recover( pFactor );
 	parseTermRest(0);
+	if( m_parserError )
+		recover( pTermRest );
 
     return NULL;
 }
@@ -438,6 +566,8 @@ void Parser::parseArrayReference()
 
 	match( tc_LBRACKET );
 	parseExpression();
+	if( m_parserError )
+		recover( pExpression );
 	match( tc_RBRACKET );
 }
 SymbolTableEntry* Parser::parseFactor()
@@ -448,17 +578,23 @@ SymbolTableEntry* Parser::parseFactor()
 	{
 		match( tc_ID );
 		parseFactorRest(0);
+		if( m_parserError )
+			recover( pFactorRest );
 	}
 	else if( currIs(tc_LPAREN) )
 	{
 		match( tc_LPAREN );
 		parseExpression();
+		if( m_parserError )
+			recover( pExpression );
 		match( tc_RPAREN );
 	}
 	else if( currIs(tc_NOT) )
 	{
 		match( tc_NOT );
 		parseFactor();
+		if( m_parserError )
+			recover( pFactor );
 	}
 	else
 		match( tc_NUMBER );
@@ -471,19 +607,33 @@ SymbolTableEntry* Parser::parseFactorRest(SymbolTableEntry* prevEntry)
 	{
 		match( tc_LPAREN );
 		parseExpressionList(0);
+		if( m_parserError )
+			recover( pExpressionList );
 		match( tc_RPAREN );
 	}
 	else if( currIs(tc_LBRACKET) )
+	{
 		parseArrayReference();
+		if( m_parserError )
+			recover( pArrayReference );
+	}
 }
 SymbolTableEntry* Parser::parseTermRest(SymbolTableEntry* prevEntry)
 {
 	dout << "parseTermRest\n";
 
-	while( currIs(tc_MULOP) )
+	if( currIs(tc_MULOP) )
 	{
 		match( tc_MULOP );
 		parseFactor();
+		if( m_parserError )
+			recover( pFactor );
 		parseTermRest(0);
+		if( m_parserError )
+			recover( pTermRest );
+	
+		parseTermRest(0);
+		if( m_parserError )
+			recover( pTermRest );
 	}
 }
