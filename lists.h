@@ -1,5 +1,5 @@
 #include "token.h"
-
+// follow sets
 
 TokenCode pProgramDefinition[6] = { tc_SEMICOL, tc_VAR, tc_FUNCTION, tc_PROCEDURE, tc_BEGIN, (TokenCode)'\0' };
 
