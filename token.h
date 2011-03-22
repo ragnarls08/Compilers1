@@ -31,7 +31,7 @@ enum TokenCode {
 	tc_LBRACKET,
 	tc_RPAREN,
 	tc_RBRACKET,
-	tc_EOF,
+	tc_EOF, //16
 	tc_ERROR,
 
 	tc_PROGRAM,
@@ -46,7 +46,7 @@ enum TokenCode {
     tc_END,
     tc_IF,
     tc_THEN,
-    tc_ELSE,
+    tc_ELSE,//30
 	tc_WHILE,
     tc_DO,
     tc_NOT,

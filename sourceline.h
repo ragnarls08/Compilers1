@@ -15,20 +15,20 @@
 
 class LineError
 {
-private:						/* A class consisting of			*/
-  int  m_column;				/* the column number of the error   */
-  char* m_errorMsg;             /* and the associated error message */
+private:				/* A class consisting of			*/
+	int  m_column;		/* the column number of the error   */
+	char* m_errorMsg;   /* and the associated error message */
 public:
 	int getColumn();
 	char* getError();
-	void set(int col, char* err);	/* Set column number and error		*/
+	void set(int col, char* err);	/* Set column number and error	*/
 };
 
 
-class SourceLine {
-
+class SourceLine 
+{
 private:
-	std::string*	m_line;				// Characters in current line 
+	std::string*	m_line;			// Characters in current line 
 	int		m_firstLexemeColumn;	// First column number of current lexeme
 	int		m_lastLexemeColumn;	// Last column number of current lexeme
 	int		m_lineNo;			// Line number in original source
