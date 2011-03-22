@@ -3,6 +3,7 @@
 #include "FlexLexer.h"
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <algorithm>
 
 //for case insensitive comparison
@@ -16,7 +17,7 @@ using namespace std;
 Scanner::Scanner()
 {
 	lexer = new yyFlexLexer;
-	m_sourceLine = new SourceLine(10); //what the hell er size?
+	m_sourceLine = new SourceLine(10); //
 }
 Scanner::~Scanner()
 {}
@@ -24,54 +25,59 @@ void Scanner::setError(char* msg)
 {
 	m_sourceLine->setError(msg);
 }
+bool Scanner::notToParser( TokenCode tC)
+{
+	return (tC == tc_ERROR || tC == tc_NEWLINE || tC == tc_COMMENT || tC == tc_SPACE); 
+}
 Token* Scanner::nextToken()
 {
 	TokenCode tCode = (TokenCode)lexer->yylex();
-	const char* lexeme = lexer->YYText();
+	std::string* str = new std::string( lexer->YYText() );
 
-	if(tCode == tc_NEWLINE)
-    {
-        m_sourceLine->newLine();
-        return nextToken();
-    }
+	const char* lexeme = str->c_str(); 
+	
+	while( notToParser( tCode ) )
+	{	
+		if(tCode == tc_ERROR)
+		{
+			m_sourceLine->setError( (char*)"Illegal character");	
+		}
+		if(tCode == tc_NEWLINE)
+    	{
+	        m_sourceLine->newLine();
+	    }
+		else
+	    	m_sourceLine->buildLine(lexeme);
+	
 
-    m_sourceLine->buildLine(lexeme);
+		tCode = (TokenCode)lexer->yylex();
+		str->clear();
+		str->append( lexer->YYText() );
 
-    if(tCode == tc_COMMENT)
-    {
-        return nextToken();
-    }
-
-    if(tCode == tc_SPACE)
-    {
-        return nextToken();
-    }
-	if(tCode == tc_ERROR)
-	{
-		m_sourceLine->setError( (char*)"Illegal character");	
+		lexeme = str->c_str(); 
 	}
-
+	
 	if( tCode == tc_ID ) // identifier
 	{
 		TokenCode tc = keywordCheck(lexeme);
-
+	
 		if(tc)
 		{
 			tCode = tc;
 			Type = dt_KEYWORD;
 		}
-
-		//convert string to lowercase
+				//convert string to lowercase
 		char *temp = lowerCase(lexeme, lexer->YYLeng());
-
-		setCurrentToken(tCode, Type, temp );
-
-		delete temp;
+				setCurrentToken(tCode, Type, temp );
+				delete temp;
 	}
 	else if ( Type == dt_REAL || Type == dt_INTEGER )
 		setCurrentToken(tCode, Type, lexeme);
 	else
 		setCurrentToken(tCode, Type, Oper );
+
+	m_sourceLine->buildLine(lexeme);
+	delete str;	
 
 	return &m_currentToken;
 }

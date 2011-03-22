@@ -4,7 +4,7 @@
 #include "lists.h"
 #include <string>
 
-#define debugOutput
+//#define debugOutput
 
 #ifdef debugOutput
 	#define dout  std::cout << "\t"
@@ -40,12 +40,10 @@ bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 }
 void Parser::recover(const TokenCode* plist)
 {
-	std::cout << "recovering " << getTokenCode() << "\n";
 	while( !tokenCodeIn(getTokenCode(), plist) )
 	{
 		if( getTokenCode() == tc_EOF )
 		{
-			std::cout << tc_EOF << "\n";
 			break;
 		}
 		getToken();
@@ -54,6 +52,7 @@ void Parser::recover(const TokenCode* plist)
 				getToken();
 
 	m_parserError = false;	
+
 }
 
 void Parser::parse()
@@ -68,8 +67,7 @@ void Parser::parse()
 void Parser::getToken()
 {
 	m_currentToken = m_lexan->nextToken();
-
-	std::cout << "lasdf ---- " << getTokenCode() << "\n";
+	
 	if( currIs( tc_ID ) || currIs( tc_NUMBER ) )
     {
         SymbolTableEntry *entry = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
@@ -92,6 +90,7 @@ void Parser::expectedTokenCode(TokenCode tc)
 	str->append(  t.tokenCodeToString() );
 
 	m_lexan->setError( (char*)str->c_str() );	
+
 }
 void Parser::match( TokenCode tc )
 {

@@ -20,7 +20,7 @@ begin
                 y := 123.45E-3
         else 
 	begin
-          y := test(3.3);
+          y := test(3.3)
 	  x := x+2
 	end  
 end

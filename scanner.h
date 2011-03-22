@@ -51,6 +51,7 @@ private:
 	TokenCode keywordCheck(const char *str);	// returns the appropriate tokencode if str is a keyword, else tc_ID
 	SourceLine* m_sourceLine;
 	char* lowerCase(const char* str, int size);
+	bool notToParser( TokenCode tC );
 
 public:
 	Scanner();

@@ -588,7 +588,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 55 "yalla.l"
+#line 32 "yalla.l"
 
 #line 594 "lex.yy.cc"
 
@@ -685,168 +685,168 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 56 "yalla.l"
+#line 33 "yalla.l"
 { Oper = op_NONE; Type = dt_INTEGER; return (tc_NUMBER);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 57 "yalla.l"
+#line 34 "yalla.l"
 { Oper = op_NONE; Type = dt_REAL; return (tc_NUMBER);}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 59 "yalla.l"
+#line 36 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_COMMENT);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 60 "yalla.l"
+#line 37 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_SPACE);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 61 "yalla.l"
+#line 38 "yalla.l"
 { Oper = op_EQ; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 62 "yalla.l"
+#line 39 "yalla.l"
 { Oper = op_NE; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 63 "yalla.l"
+#line 40 "yalla.l"
 { Oper = op_LT; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 64 "yalla.l"
+#line 41 "yalla.l"
 { Oper = op_LE; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 65 "yalla.l"
+#line 42 "yalla.l"
 { Oper = op_GE; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 66 "yalla.l"
+#line 43 "yalla.l"
 { Oper = op_GT; Type = dt_OP; return(tc_RELOP);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 68 "yalla.l"
+#line 45 "yalla.l"
 { Oper = op_PLUS; Type = dt_OP; return(tc_ADDOP);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 69 "yalla.l"
+#line 46 "yalla.l"
 { Oper = op_MINUS; Type = dt_OP; return(tc_ADDOP);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 70 "yalla.l"
+#line 47 "yalla.l"
 { Oper = op_OR; Type = dt_OP; return(tc_ADDOP);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 72 "yalla.l"
+#line 49 "yalla.l"
 { Oper = op_MULT; Type = dt_OP; return(tc_MULOP);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 73 "yalla.l"
+#line 50 "yalla.l"
 { Oper = op_DIVIDE; Type = dt_OP; return(tc_MULOP);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 74 "yalla.l"
+#line 51 "yalla.l"
 { Oper = op_DIV; Type = dt_OP; return(tc_MULOP);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 75 "yalla.l"
+#line 52 "yalla.l"
 { Oper = op_MOD; Type = dt_OP; return(tc_MULOP);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 76 "yalla.l"
+#line 53 "yalla.l"
 { Oper = op_AND; Type = dt_OP; return(tc_MULOP);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 78 "yalla.l"
+#line 55 "yalla.l"
 { Oper = op_NONE; Type = dt_OP; return(tc_ASSIGNOP);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 80 "yalla.l"
+#line 57 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_SEMICOL);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 81 "yalla.l"
+#line 58 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_COLON);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 82 "yalla.l"
+#line 59 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_COMMA);}	
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 83 "yalla.l"
+#line 60 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_DOT);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 84 "yalla.l"
+#line 61 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_DOTDOT);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 85 "yalla.l"
+#line 62 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_LPAREN);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 86 "yalla.l"
+#line 63 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_LBRACKET);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 87 "yalla.l"
+#line 64 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_RPAREN);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 88 "yalla.l"
+#line 65 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_RBRACKET);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 90 "yalla.l"
+#line 67 "yalla.l"
 { Oper = op_NONE; Type = dt_ID ;return(tc_ID);}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 91 "yalla.l"
+#line 68 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_EOF);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 92 "yalla.l"
+#line 69 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_ERROR);}
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 93 "yalla.l"
+#line 70 "yalla.l"
 { Oper = op_NONE; Type = dt_NONE; return(tc_NEWLINE);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 94 "yalla.l"
+#line 71 "yalla.l"
 ECHO;
 	YY_BREAK
 #line 853 "lex.yy.cc"
@@ -1756,7 +1756,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 94 "yalla.l"
+#line 71 "yalla.l"
 
 
 

@@ -29,7 +29,7 @@ begin
 
 	while (x<4) 
 	begin
-	   y := ftest (x;
+	   y := ftest (x);
 	   x := x + 
 	end
 .
