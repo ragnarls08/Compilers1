@@ -1,4 +1,4 @@
-Program test(input,output);
+		Program test(input,output);
 {A program without parsing errors}
 Var X : integer;
 Var y : real;
@@ -15,13 +15,13 @@ begin
 end;
 
 begin
-        y := 2.0*(3.14);
-        if x>2 then
+        y := 2.0*(3.14!$);
+        if x>2 
                 y := 123.45E-3
         else 
 	begin
           y := test(3.3)
-	  x := x+2
+	  x := x+
 	end  
 end
 .

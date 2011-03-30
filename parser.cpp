@@ -16,6 +16,10 @@ Parser::Parser(bool listing)
 	m_lexan = new Scanner();
 	m_symTab = new SymbolTable();
 
+//ath hvad a ad gera vid return gildin
+	SymbolTableEntry* zero = m_symTab->insert("0");
+	SymbolTableEntry* one = m_symTab->insert("1");	
+
 	m_parserError = false;
 	m_totalErrors = 0;
 }
@@ -33,8 +37,10 @@ bool Parser::currIs(TokenCode tc)
 bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 {
 	for (int i=0; plist[i] != '\0'; ++i)
+	{	
 		if( plist[i] == tc )
 			return true;
+	}
 
 	return false;
 }
@@ -44,13 +50,14 @@ void Parser::recover(const TokenCode* plist)
 	{
 		if( getTokenCode() == tc_EOF )
 		{
-			break;
+			return;	
 		}
+
 		getToken();
 	}
+
 	if( getTokenCode() == tc_SEMICOL )
 				getToken();
-
 	m_parserError = false;
 }
 
@@ -59,6 +66,8 @@ void Parser::parse()
 	//start the parsing
 	getToken();//fetch the first token
 	parseProgram();
+	match( tc_EOF );
+
 //	std::cout << "Symbol Table entries: " << '\n';
 //	m_symTab->print();
 }
@@ -436,6 +445,8 @@ void Parser::parseWhileStatement()
 void Parser::parseIdOrProcedureStatement(SymbolTableEntry* prevEntry)
 {
 	dout << "parseIdOrProcedureStatement\n";
+
+	SymbolTableEntry* entry;
 
 	if( currIs(tc_ASSIGNOP) )
 	{
