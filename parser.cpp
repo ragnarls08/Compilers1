@@ -16,9 +16,9 @@ Parser::Parser(bool listing)
 	m_lexan = new Scanner();
 	m_symTab = new SymbolTable();
 
-//ath hvad a ad gera vid return gildin
-	SymbolTableEntry* zero = m_symTab->insert("0");
-	SymbolTableEntry* one = m_symTab->insert("1");	
+	//initialize symbol table for boolean expressions.
+	m_symTab->insert("0");
+	m_symTab->insert("1");	
 
 	m_parserError = false;
 	m_totalErrors = 0;
@@ -29,6 +29,25 @@ Parser::~Parser()
     delete m_lexan;
     delete m_symTab;
 }
+
+SymbolTableEntry* Parser::newLabel()
+{
+	SymbolTableEntry *entry = m_symTab->insert( m_code->newLabel().c_str() );
+
+	//a ad generatea her?
+	//m_code->generate(cd_LABEL, NULL, NULL, entry);
+	
+	return entry;	
+}
+SymbolTableEntry* Parser::newTemp()
+{
+	SymbolTableEntry *entry = m_symTab->insert( m_code->newTemp().c_str() );
+
+	m_code->generate(cd_VAR, NULL, NULL, entry);
+	
+	return entry;	
+}
+
 
 bool Parser::currIs(TokenCode tc)
 {

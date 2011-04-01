@@ -1,0 +1,99 @@
+#include "code.h"
+
+Quadruple::Quadruple()
+{
+}
+
+void Quadruple::set(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
+{
+	m_op = op;
+	m_arg1 = arg1;
+	m_arg2 = arg2;
+	m_result = result;
+}
+
+void Quadruple::print()
+{
+	char* CodeStrings[] = {"LABEL", "UMINUS", "ASSIGN", "ADD", "SUB", "MULT", "DIVIDE", "DIV", "MOD", "OR", "AND", "NOT", "LT", "LE", "GT", "GE", "EQ", "NE", "GOTO", "CALL", "APARAM", "FPARAM", "VAR", "RETURN", "NOOP"};
+
+	static bool lastisLabel = false;
+	char *opStr;
+
+	opStr = CodeStrings[m_op];
+	
+	if (m_op == cd_LABEL) {
+		if (lastisLabel)
+			printf("\n");
+		printf("%7s",m_result->getLexeme());
+		printf("%c",':');
+		lastisLabel = true;
+	}
+	else {
+		if (!lastisLabel)
+		   printf("%8s"," ");
+		printf("%10s",opStr);
+		
+		if (m_arg1 != NULL)
+			printf("%15s", m_arg1->getLexeme());
+		else
+			printf("%15s"," ");
+		
+		if (m_arg2 != NULL) 
+			printf("%15s", m_arg2->getLexeme());
+		else
+			printf("%15s"," ");
+		
+		if (m_result != NULL)
+			printf("%15s\n", m_result->getLexeme());
+		else
+			printf("%15s\n"," ");
+
+		lastisLabel = false;
+	}	
+}
+
+//---------------------------------------------------------
+//Code
+Code::Code()
+{
+	//todo construct
+	m_tempCount = 0;
+	m_labelCount = 0;
+}
+
+void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
+{
+	//todo generate code for entry
+}
+
+void Code::generateCall(SymbolTableEntry* entry, EntryList* eList)
+{
+}
+
+void Code::generateFormals(EntryList* eList)
+{
+}
+
+void Code::generateVariables(EntryList* eList)
+{
+}
+
+std::string Code::newLabel()
+{
+	std::string ret = "lab" + m_labelCount;
+	return ret;
+}
+std::string Code::newTemp()
+{
+	std::string ret = "t" + m_tempCount;
+	return ret;	
+}
+void Code::print()
+{
+	for(int i=0; i<m_QdrList.size(); ++i)
+	{
+		m_QdrList.at(i).print();
+	}
+}
+
+
