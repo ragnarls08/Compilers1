@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include "symtab.h"
+#include "token.h"
 #include <vector>
 #include <string>
 
@@ -26,6 +27,8 @@ private:
 	SymbolTableEntry* m_result;	/* result is in symbol table */
 public:
 	Quadruple();
+	Quadruple(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result);
+
 	CodeOp getOp() { return m_op;}
 	void set(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result);
 	void print();
@@ -45,6 +48,7 @@ public:
 	std::string newLabel();
 	std::string newTemp();
 	void print();
+	CodeOp getCodeOpFromOpCode( OpType code );
 };
 
 #endif

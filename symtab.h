@@ -10,6 +10,7 @@
 #define	symtab_h
 
 #include <stdio.h>
+#include <vector>
 
 #define SYMMAX  500			// maximum size of symbol table
 
@@ -31,20 +32,7 @@ public:
 // List of SymbolTableEntries 
 //----------------------------------------------------------------
 
-class EntryList {
-private:
-	SymbolTableEntry* m_entry;
-	EntryList* m_next;
-
-	void setEntry(SymbolTableEntry* entry)	{m_entry = entry;}
-public:
-	EntryList() {m_entry = NULL; m_next = NULL;}
-	SymbolTableEntry* getEntry() {return m_entry;}
-	EntryList* getNext() { return m_next;}
-	void setNext(EntryList* eList) {m_next = eList;}
-	void addEntry(SymbolTableEntry* entry);    // adds an entry 
-	int count();					// count of items in list
-};
+typedef std::vector<SymbolTableEntry> EntryList;
 
 //----------------------------------------------------------------
 // SymbolTable class

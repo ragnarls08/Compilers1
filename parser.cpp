@@ -15,6 +15,7 @@ Parser::Parser(bool listing)
 {
 	m_lexan = new Scanner();
 	m_symTab = new SymbolTable();
+	m_code = new Code();
 
 	//initialize symbol table for boolean expressions.
 	m_symTab->insert("0");
@@ -42,7 +43,6 @@ SymbolTableEntry* Parser::newLabel()
 SymbolTableEntry* Parser::newTemp()
 {
 	SymbolTableEntry *entry = m_symTab->insert( m_code->newTemp().c_str() );
-
 	m_code->generate(cd_VAR, NULL, NULL, entry);
 	
 	return entry;	
@@ -89,6 +89,7 @@ void Parser::parse()
 
 //	std::cout << "Symbol Table entries: " << '\n';
 //	m_symTab->print();
+	m_code->print();
 }
 
 void Parser::getToken()
@@ -368,9 +369,10 @@ void Parser::parseCompoundStatement()
 void Parser::parseOptionalStatement()
 {
 	dout << "parseOptionalStatement\n";
-
+	dout << "++++++++++++++++++++++++++++" << getTokenCode() << "\n";
 	if( currIs(tc_BEGIN) || currIs(tc_ID) || currIs(tc_IF) || currIs(tc_WHILE) )
 	{
+		dout << "parseOptionalStatemtn inside if\n";
 		parseStatementList();
 		if( m_parserError )
 			recover( pStatementList );
@@ -503,9 +505,11 @@ SymbolTableEntry* Parser::parseExpression()
     SymbolTableEntry* entry = parseSimpleExpression();
 	if( m_parserError )
 		recover( pSimpleExpression );
-    parseSimpleExpressionRelop(entry);
+    entry = parseSimpleExpressionRelop(entry);
 	if( m_parserError )
 		recover( pSimpleExpressionRelop );
+
+	return entry;
 }
 
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
@@ -558,17 +562,31 @@ SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry
 {
 	dout << "parseSimpleExrpessionRelop\n";
 
-    SymbolTableEntry* entry = NULL;
-
     if( currIs(tc_RELOP) )
     {
+
+		SymbolTableEntry* temp = newTemp();
+		SymbolTableEntry* labelTrue = newLabel();
+		SymbolTableEntry* labelEnd = newLabel();
+		CodeOp oper = m_code->getCodeOpFromOpCode( m_currentToken->getDataValue().op );		
+
         match(tc_RELOP);
-        entry = parseSimpleExpression();
+        SymbolTableEntry* entry = parseSimpleExpression();
+//		parseSimpleExpression();
+		m_code->generate(oper, prevEntry, entry, labelTrue);
+		m_code->generate(cd_ASSIGN, m_symTab->lookup("0"), NULL, temp);
+		m_code->generate(cd_GOTO, NULL, NULL, labelEnd);
+		m_code->generate(cd_LABEL, NULL, NULL, labelTrue);
+		m_code->generate(cd_ASSIGN, m_symTab->lookup("1"), NULL, temp); 
+		m_code->generate(cd_LABEL, NULL, NULL, labelEnd);
+
 		if( m_parserError )
 			recover( pSimpleExpression );
+		
+		return temp;
     }
 
-    return entry;
+    return prevEntry;
 }
 
 SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry)

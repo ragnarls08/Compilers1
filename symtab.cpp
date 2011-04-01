@@ -29,25 +29,6 @@ char *SymbolTableEntry::getLexeme(void)
 }
 
 
-
-//EntryList
-void EntryList::addEntry(SymbolTableEntry* entry)
-{
-	m_next = new EntryList();
-	m_next->setEntry(entry);
-
-}
-int EntryList::count()
-{
-	int counter = 0;
-
-	while(m_next)
-		counter++;
-
-	return counter;
-}
-
-
 //SymbolTable
 SymbolTable::SymbolTable(void)
 {
