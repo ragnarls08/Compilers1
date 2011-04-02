@@ -2,9 +2,9 @@
 #include <string.h>
 #include <iostream>
 
-#ifndef WIN32 
-#define stricmp strcasecmp 
-#define strnicmp strncasecmp 
+#ifndef WIN32
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
 #endif
 
 using namespace std;
@@ -62,6 +62,7 @@ SymbolTableEntry* SymbolTable::lookup(const char* lexeme)
 	int i = 0;
 	while(i <= lastEntry)
 	{
+	    //this is a hakk, ! is simply because strcomp returns 0 if it is a match
 		if (!(stricmp(m_entry[i]->getLexeme(),lexeme)))
 			return m_entry[i];
 		i++;
@@ -74,7 +75,7 @@ void SymbolTable::print(void){
 	{
 		cout << m_entry[i]->getLexeme() << endl;
 		i++;
-	}	
+	}
 }
 
 
