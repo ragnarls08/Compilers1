@@ -62,8 +62,8 @@ void Quadruple::print()
 Code::Code()
 {
 	//todo construct
-	m_tempCount = 0;
-	m_labelCount = 0;
+	m_tempCount = 1;
+	m_labelCount = 1;
 }
 
 void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
@@ -73,14 +73,27 @@ void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, S
 
 void Code::generateCall(SymbolTableEntry* entry, EntryList* eList)
 {
+	for(int i=0; i<eList->m_elist.size(); ++i)
+	{
+		m_QdrList.push_back( Quadruple(cd_APARAM, NULL, NULL, eList->m_elist.at(i) ) );
+	}
+	m_QdrList.push_back( Quadruple(cd_CALL, entry, NULL, NULL) );
 }
 
 void Code::generateFormals(EntryList* eList)
 {
+	for(int i=0; i<eList->m_elist.size(); ++i)
+	{
+		m_QdrList.push_back( Quadruple(cd_FPARAM, NULL, NULL, eList->m_elist.at(i) ));
+	}
 }
 
 void Code::generateVariables(EntryList* eList)
 {
+	for(int i=0; i<eList->m_elist.size(); ++i)
+	{
+		m_QdrList.push_back( Quadruple(cd_VAR, NULL, NULL, eList->m_elist.at(i) ));
+	}
 }
 
 std::string Code::newLabel()
@@ -116,7 +129,7 @@ CodeOp Code::getCodeOpFromOpCode( OpType code )
 	switch( code )
 	{
 		case op_PLUS:
-			return cd_ASSIGN;
+			return cd_ADD;
 		case op_MINUS:
 			return cd_SUB;
 		case op_OR:

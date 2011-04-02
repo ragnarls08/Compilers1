@@ -9,6 +9,17 @@
 
 using namespace std;
 
+EntryList::EntryList()
+{
+	m_elist = std::vector<SymbolTableEntry*>();
+}
+void EntryList::push_back( SymbolTableEntry* entry )
+{
+	std::cout.flush();
+	std::cout << m_elist.empty() << "   pushing \n";
+	m_elist.push_back( entry );
+	std::cout << "done pushing \n";
+}
 //SymbolTableEntry
 SymbolTableEntry::SymbolTableEntry(const char* lexeme)
 {
@@ -55,7 +66,7 @@ SymbolTableEntry* SymbolTable::lookup(const char* lexeme)
 			return m_entry[i];
 		i++;
 	}
-	return 0;
+	return insert( lexeme );	
 }
 void SymbolTable::print(void){
 	int i = 0;

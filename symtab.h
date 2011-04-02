@@ -32,8 +32,14 @@ public:
 // List of SymbolTableEntries 
 //----------------------------------------------------------------
 
-typedef std::vector<SymbolTableEntry> EntryList;
-
+//typedef std::vector<SymbolTableEntry*> EntryList;
+class EntryList
+{
+public:
+	EntryList();
+	void push_back(SymbolTableEntry* entry);
+	std::vector<SymbolTableEntry*> m_elist;
+};
 //----------------------------------------------------------------
 // SymbolTable class
 //----------------------------------------------------------------
