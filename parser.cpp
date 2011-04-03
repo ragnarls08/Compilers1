@@ -87,7 +87,6 @@ void Parser::parse()
 	parseProgram();
 	match( tc_EOF );
 
-	m_code->print();
 }
 
 void Parser::getToken()
