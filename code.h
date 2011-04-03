@@ -15,6 +15,8 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
 enum CodeOp  {	cd_LABEL, cd_UMINUS, cd_ASSIGN, cd_ADD, cd_SUB, cd_MULT, cd_DIVIDE, cd_DIV, cd_MOD,
 				cd_OR, cd_AND, cd_NOT, cd_LT, cd_LE, cd_GT, cd_GE, cd_EQ, cd_NE,
 				cd_GOTO, cd_CALL, cd_APARAM, cd_FPARAM, cd_VAR, cd_RETURN, cd_NOOP};
@@ -32,6 +34,7 @@ public:
 	CodeOp getOp() { return m_op;}
 	void set(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result);
 	void print();
+	string toString();
 };
 
 class Code {

@@ -1,6 +1,9 @@
 #include "code.h"
 #include <sstream>
 #include <iostream>
+#include <fstream>
+#include <string.h>
+
 Quadruple::Quadruple()
 {
 }
@@ -28,33 +31,111 @@ void Quadruple::print()
 
 	if (m_op == cd_LABEL) {
 		if (lastisLabel)
-			printf("\n");
+            printf("\n");
 		printf("%7s",m_result->getLexeme());
 		printf("%c",':');
 		lastisLabel = true;
 	}
 	else {
 		if (!lastisLabel)
-		   printf("%8s"," ");
-		printf("%10s",opStr);
+            printf("%8s"," ");
+        printf("%10s",opStr);
 
 		if (m_arg1 != NULL)
-			printf("%15s", m_arg1->getLexeme());
+            printf("%15s", m_arg1->getLexeme());
 		else
-			printf("%15s"," ");
+            printf("%15s"," ");
 
 		if (m_arg2 != NULL)
-			printf("%15s", m_arg2->getLexeme());
+            printf("%15s", m_arg2->getLexeme());
 		else
-			printf("%15s"," ");
+            printf("%15s"," ");
 
 		if (m_result != NULL)
-			printf("%15s\n", m_result->getLexeme());
+            printf("%15s\n", m_result->getLexeme());
 		else
-			printf("%15s\n"," ");
+            printf("%15s\n"," ");
 
 		lastisLabel = false;
 	}
+}
+
+std::string Quadruple::toString()
+{
+    std::string str;
+
+    char* CodeStrings[] = {"LABEL", "UMINUS", "ASSIGN", "ADD", "SUB", "MULT", "DIVIDE", "DIV", "MOD", "OR", "AND", "NOT", "LT", "LE", "GT", "GE", "EQ", "NE", "GOTO", "CALL", "APARAM", "FPARAM", "VAR", "RETURN", "NOOP"};
+
+	static bool lastisLabel = false;
+	char *opStr;
+
+	opStr = CodeStrings[m_op];
+
+    char buffer [100];
+    int n = 0;
+
+	if (m_op == cd_LABEL) {
+		if (lastisLabel)
+		{
+		    n = sprintf(buffer, "\n");
+		    str.append(buffer, 0, n);
+		}
+		n = sprintf(buffer, "%7s", m_result->getLexeme());
+        str.append(buffer, 0, n);
+        n = sprintf(buffer, "%c",':');
+        str.append(buffer, 0, n);
+
+		lastisLabel = true;
+	}
+	else {
+		if (!lastisLabel)
+		{
+		    n = sprintf(buffer, "%8s"," ");
+            str.append(buffer, 0, n);
+		}
+
+        n = sprintf(buffer, "%10s",opStr);
+        str.append(buffer, 0, n);
+
+		if (m_arg1 != NULL)
+		{
+		    n = sprintf(buffer, "%15s", m_arg1->getLexeme());
+            str.append(buffer, 0, n);
+		}
+
+		else
+		{
+		    n = sprintf(buffer, "%15s", " ");
+            str.append(buffer, 0, n);
+		}
+
+		if (m_arg2 != NULL)
+		{
+		    n = sprintf(buffer, "%15s", m_arg2->getLexeme());
+            str.append(buffer, 0, n);
+		}
+		else
+        {
+            n = sprintf(buffer, "%15s", " ");
+            str.append(buffer, 0, n);
+        }
+
+		if (m_result != NULL)
+		{
+		    n = sprintf(buffer, "%15s", m_result->getLexeme());
+            str.append(buffer, 0, n);
+		}
+		else
+		{
+		    n = sprintf(buffer, "%15s", " ");
+            str.append(buffer, 0, n);
+		}
+
+		lastisLabel = false;
+	}
+	if(!lastisLabel)
+        str.append("\n");
+    return str;
 }
 
 //---------------------------------------------------------
@@ -106,6 +187,7 @@ std::string Code::newLabel()
 	m_labelCount++;
 	return ret;
 }
+
 std::string Code::newTemp()
 {
 	std::stringstream os;
@@ -116,12 +198,19 @@ std::string Code::newTemp()
 	m_tempCount++;
 	return ret;
 }
+
 void Code::print()
 {
-	for(unsigned int i=0; i<m_QdrList.size(); ++i)
+    std::ofstream TACfile;
+    TACfile.open ("TAC.txt");
+
+    for(unsigned int i=0; i<m_QdrList.size(); ++i)
 	{
+		TACfile << m_QdrList.at(i).toString();
 		m_QdrList.at(i).print();
 	}
+
+	TACfile.close();
 }
 
 CodeOp Code::getCodeOpFromOpCode( OpType code )
