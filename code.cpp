@@ -7,7 +7,7 @@ Quadruple::Quadruple()
 
 Quadruple::Quadruple(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result) : m_op(op), m_arg1(arg1), m_arg2(arg2), m_result(result)
 {
-} 
+}
 
 void Quadruple::set(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
 {
@@ -25,7 +25,7 @@ void Quadruple::print()
 	char *opStr;
 
 	opStr = CodeStrings[m_op];
-	
+
 	if (m_op == cd_LABEL) {
 		if (lastisLabel)
 			printf("\n");
@@ -37,24 +37,24 @@ void Quadruple::print()
 		if (!lastisLabel)
 		   printf("%8s"," ");
 		printf("%10s",opStr);
-		
+
 		if (m_arg1 != NULL)
 			printf("%15s", m_arg1->getLexeme());
 		else
 			printf("%15s"," ");
-		
-		if (m_arg2 != NULL) 
+
+		if (m_arg2 != NULL)
 			printf("%15s", m_arg2->getLexeme());
 		else
 			printf("%15s"," ");
-		
+
 		if (m_result != NULL)
 			printf("%15s\n", m_result->getLexeme());
 		else
 			printf("%15s\n"," ");
 
 		lastisLabel = false;
-	}	
+	}
 }
 
 //---------------------------------------------------------
@@ -73,7 +73,7 @@ void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, S
 
 void Code::generateCall(SymbolTableEntry* entry, EntryList* eList)
 {
-	for(int i=0; i<eList->m_elist.size(); ++i)
+	for(unsigned int i=0; i<eList->m_elist.size(); ++i)
 	{
 		m_QdrList.push_back( Quadruple(cd_APARAM, NULL, NULL, eList->m_elist.at(i) ) );
 	}
@@ -82,7 +82,7 @@ void Code::generateCall(SymbolTableEntry* entry, EntryList* eList)
 
 void Code::generateFormals(EntryList* eList)
 {
-	for(int i=0; i<eList->m_elist.size(); ++i)
+	for(unsigned int i=0; i<eList->m_elist.size(); ++i)
 	{
 		m_QdrList.push_back( Quadruple(cd_FPARAM, NULL, NULL, eList->m_elist.at(i) ));
 	}
@@ -90,7 +90,7 @@ void Code::generateFormals(EntryList* eList)
 
 void Code::generateVariables(EntryList* eList)
 {
-	for(int i=0; i<eList->m_elist.size(); ++i)
+	for(unsigned int i=0; i<eList->m_elist.size(); ++i)
 	{
 		m_QdrList.push_back( Quadruple(cd_VAR, NULL, NULL, eList->m_elist.at(i) ));
 	}
@@ -102,7 +102,7 @@ std::string Code::newLabel()
 	os << m_labelCount;
 
 	std::string ret = "lab" + os.str();
-	
+
 	m_labelCount++;
 	return ret;
 }
@@ -112,13 +112,13 @@ std::string Code::newTemp()
 	os << m_tempCount;
 
 	std::string ret = "t" + os.str();
-	
+
 	m_tempCount++;
-	return ret;	
+	return ret;
 }
 void Code::print()
 {
-	for(int i=0; i<m_QdrList.size(); ++i)
+	for(unsigned int i=0; i<m_QdrList.size(); ++i)
 	{
 		m_QdrList.at(i).print();
 	}
