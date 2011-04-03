@@ -1,13 +1,8 @@
-//#include "scanner.h"
-//#include "token.h"
-//#include "symtab.h"
 #include "parser.h"
 #include "code.h"
 
 int main( int /* argc */, char** /* argv */ )
 {
-	//std::cout << "testing123...\n";
-
 	Parser p = Parser(false);
 
 	p.parse();
@@ -19,7 +14,7 @@ int main( int /* argc */, char** /* argv */ )
     }
     else{
 
-        std::cout << "Total number of errors: " << totalErr << "\n";
+        std::cout << "\nTotal number of errors: " << totalErr << "\n";
     }
 	return 0;
 }

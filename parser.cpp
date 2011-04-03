@@ -74,8 +74,8 @@ void Parser::recover(const TokenCode* plist)
 	}
 
 	//if the token is a semicol then we want to continue from the next token
-	if( getTokenCode() == tc_SEMICOL )
-				getToken();
+//	if( getTokenCode() == tc_SEMICOL )
+//				getToken();
 
 	m_parserError = false;
 }
@@ -465,12 +465,18 @@ void Parser::parseStatement()
 		if( m_parserError )
 			recover( pWhileStatement );
 	}
-	else
+	else if( currIs(tc_BEGIN) )
 	{
 		parseCompoundStatement();
 		if( m_parserError )
 			recover( pCompoundStatement );
 	}
+	else
+	{
+		m_totalErrors++;
+		m_parserError = true;
+	}
+	
 }
 void Parser::parseIfStatement()
 {
@@ -487,7 +493,19 @@ void Parser::parseIfStatement()
 	if( m_parserError )
 		recover( pExpression );
     match(tc_THEN);
+
+	//parseExpression can return correctly if the first paren was not present
+	if( m_parserError && currIs(tc_RPAREN))
+	{
+		m_parserError = false;
+		getToken();
+		match(tc_THEN);
+	}
+		
+
     parseStatement();
+	if( m_parserError )
+		recover( pStatement );
 
 	//true code over, goto end	
 	m_code->generate(cd_GOTO, NULL,NULL, endLabel);
@@ -495,17 +513,14 @@ void Parser::parseIfStatement()
 	//after this label the false code resides
 	m_code->generate(cd_LABEL, NULL,NULL, falseLabel);
 
-	if( m_parserError )
-		recover( pStatement );
     match(tc_ELSE);
 	//false code
     parseStatement();
+	if( m_parserError )
+		recover( pStatement );
 	
 	//end of if	
 	m_code->generate(cd_LABEL, NULL,NULL, endLabel);	
-
-	if( m_parserError )
-		recover( pStatement );
 }
 void Parser::parseWhileStatement()
 {

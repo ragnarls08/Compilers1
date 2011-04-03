@@ -202,7 +202,7 @@ std::string Code::newTemp()
 void Code::print()
 {
     std::ofstream TACfile;
-    TACfile.open ("TAC.txt");
+    TACfile.open ("output.tac");
 
     for(unsigned int i=0; i<m_QdrList.size(); ++i)
 	{

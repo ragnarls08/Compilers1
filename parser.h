@@ -71,7 +71,6 @@ private:
 	/* Code generation */
 	SymbolTableEntry* newLabel();
 	SymbolTableEntry* newTemp();
-//	CodeOp opToCode(OpType op);
 
 public:
 	Parser(bool listing);
