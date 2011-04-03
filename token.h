@@ -29,7 +29,7 @@ enum TokenCode {
 	tc_DOTDOT,
 	tc_LPAREN,
 	tc_LBRACKET,
-	tc_RPAREN,                  
+	tc_RPAREN,
 	tc_RBRACKET,
 	tc_EOF, //16
 	tc_ERROR,
@@ -53,7 +53,8 @@ enum TokenCode {
 	tc_NONE,
 	tc_COMMENT,
 	tc_NEWLINE,
-	tc_SPACE
+	tc_SPACE,
+	tc_ERROR2
 };
 
 enum DataType {

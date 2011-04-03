@@ -19,7 +19,7 @@ Parser::Parser(bool listing)
 
 	//initialize symbol table for boolean expressions.
 	m_symTab->insert("0");
-	m_symTab->insert("1");	
+	m_symTab->insert("1");
 
 	m_parserError = false;
 	m_totalErrors = 0;
@@ -34,14 +34,14 @@ Parser::~Parser()
 SymbolTableEntry* Parser::newLabel()
 {
 	SymbolTableEntry *entry = m_symTab->insert( m_code->newLabel().c_str() );
-	return entry;	
+	return entry;
 }
 SymbolTableEntry* Parser::newTemp()
 {
 	SymbolTableEntry *entry = m_symTab->insert( m_code->newTemp().c_str() );
 	m_code->generate(cd_VAR, NULL, NULL, entry);
-	
-	return entry;	
+
+	return entry;
 }
 
 //is currentToken same as tc
@@ -52,7 +52,7 @@ bool Parser::currIs(TokenCode tc)
 bool Parser::tokenCodeIn(TokenCode tc, const TokenCode *plist)
 {
 	for (int i=0; plist[i] != '\0'; ++i)
-	{	
+	{
 		if( plist[i] == tc )
 			return true;
 	}
@@ -67,7 +67,7 @@ void Parser::recover(const TokenCode* plist)
 		//if EOF then quit
 		if( getTokenCode() == tc_EOF )
 		{
-			return;	
+			return;
 		}
 
 		getToken();
@@ -103,7 +103,7 @@ void Parser::expectedTokenCode(TokenCode tc)
 	std::string *str = new std::string( "Expected " );
 	str->append(  t.tokenCodeToString() );
 
-	m_lexan->setError( (char*)str->c_str() );	
+	m_lexan->setError( (char*)str->c_str() );
 
 }
 void Parser::match( TokenCode tc )
@@ -114,6 +114,7 @@ void Parser::match( TokenCode tc )
 		//if tokencode doesnt match then this is an error
 		if( getTokenCode() != tc )
 		{
+		    m_totalErrors++;
 			expectedTokenCode(tc);
 			m_parserError = true;
 		}
@@ -132,7 +133,7 @@ void Parser::parseProgram()
 	if( m_parserError )
 		recover( pProgramDefinition );
 
-	parseDeclarations(false);//program decleration 
+	parseDeclarations(false);//program decleration
 	if( m_parserError )
 		recover( pDeclarations );
 	
@@ -157,11 +158,11 @@ void Parser::parseProgram()
 SymbolTableEntry* Parser::parseProgramDefinition()
 {
 	dout << "parseProgramDefinition\n";
-	
+
 	EntryList *eList = new EntryList();
-	
+
 	match( tc_PROGRAM );
-	
+
 	//get the name of the program from the lexeme
 	SymbolTableEntry* progName = m_symTab->insert( m_currentToken->getDataValue().lexeme ); 
 	match( tc_ID );
@@ -173,7 +174,7 @@ SymbolTableEntry* Parser::parseProgramDefinition()
 	match( tc_RPAREN );
 	match( tc_SEMICOL );
 
-	return progName; 
+	return progName;
 }
 void Parser::parseDeclarations(bool subProgramHead)
 {
@@ -299,9 +300,9 @@ void Parser::parseParameterListMore()
 		match( tc_SEMICOL );
 		parseIdentifierListAndType(false);
 		if( m_parserError )
-			recover( pIdentifierListAndType );	
+			recover( pIdentifierListAndType );
 		parseParameterListMore();
-		if( m_parserError )	
+		if( m_parserError )
 			recover( pParameterListMore );
 	}
 }
@@ -313,7 +314,7 @@ void Parser::parseIdentifierList(EntryList *eList)
 	SymbolTableEntry* identifier = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
 	eList->push_back(identifier);
 	match( tc_ID );
-	
+
 	parseIdentifierListMore(eList);
 	if( m_parserError )
 		recover( pIdentifierListMore );
@@ -328,9 +329,9 @@ void Parser::parseIdentifierListMore(EntryList *eList)
 		//get the identifier and push it to the entry list
 		SymbolTableEntry* identifier = m_symTab->lookup( m_currentToken->getDataValue().lexeme );
 		eList->push_back(identifier);
-	
+
 		match( tc_ID );
-	
+
 		parseIdentifierListMore(eList);
 		if( m_parserError )
 			recover( pIdentifierListMore );
@@ -435,7 +436,7 @@ void Parser::parseStatementListMore()
 		parseStatement();
 		if( m_parserError )
 			recover( pStatement );
-	
+
 		parseStatementListMore();
 	}
 }
@@ -510,7 +511,7 @@ void Parser::parseIfStatement()
 void Parser::parseWhileStatement()
 {
 	dout << "parseWhileStatement\n";
-	
+
 	SymbolTableEntry *labelEnd = newLabel();
 	SymbolTableEntry *labelTop = newLabel();
 	
@@ -523,7 +524,7 @@ void Parser::parseWhileStatement()
 
 	//if the condition is false goto end else execute the code below
 	m_code->generate(cd_EQ, whileEntry, m_symTab->lookup("0"), labelEnd);
-	
+
 	if( m_parserError )
 		recover( pExpression );
     match(tc_DO);
@@ -534,7 +535,7 @@ void Parser::parseWhileStatement()
 
 	//end label if while condition is not met
 	m_code->generate(cd_LABEL, NULL, NULL, labelEnd);
-	
+
 	if( m_parserError )
 		recover( pStatement );
 }
@@ -598,7 +599,7 @@ void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
 	EntryList *eList = new EntryList();
 	SymbolTableEntry* entry = parseExpression();
 	eList->push_back( entry );
-	if( m_parserError )	
+	if( m_parserError )
 		recover( pExpression );
 	parseExpressionListMore(eList);
 	if( m_parserError )
@@ -682,17 +683,17 @@ SymbolTableEntry* Parser::parseSimpleExpressionRelop(SymbolTableEntry* prevEntry
 
 		//get the right hand side of the relation
         SymbolTableEntry* entry = parseSimpleExpression();
-		
+
 		m_code->generate(oper, prevEntry, entry, labelTrue);
 		m_code->generate(cd_ASSIGN, m_symTab->lookup("0"), NULL, temp);
 		m_code->generate(cd_GOTO, NULL, NULL, labelEnd);
 		m_code->generate(cd_LABEL, NULL, NULL, labelTrue);
-		m_code->generate(cd_ASSIGN, m_symTab->lookup("1"), NULL, temp); 
+		m_code->generate(cd_ASSIGN, m_symTab->lookup("1"), NULL, temp);
 		m_code->generate(cd_LABEL, NULL, NULL, labelEnd);
 
 		if( m_parserError )
 			recover( pSimpleExpression );
-		
+
 		return temp;
     }
 
@@ -713,7 +714,7 @@ SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry
 		SymbolTableEntry* rhs = parseTerm();
 		if( m_parserError )
 			recover( pTerm );
-	
+
 		SymbolTableEntry* temp = newTemp();
 		temp = parseSimpleExpressionAddop(temp);
 
@@ -725,7 +726,7 @@ SymbolTableEntry* Parser::parseSimpleExpressionAddop(SymbolTableEntry* prevEntry
 
 		return temp;
 	}
-	
+
 	return prevEntry;
 }
 
@@ -758,7 +759,7 @@ SymbolTableEntry* Parser::parseFactor()
 {
 	dout << "parseFactor\n";
 
-	SymbolTableEntry* entry;	
+	SymbolTableEntry* entry;
 
 	if( currIs(tc_ID) )
 	{
@@ -812,7 +813,7 @@ SymbolTableEntry* Parser::parseFactorRest(SymbolTableEntry* prevEntry)
 		if( m_parserError )
 			recover( pArrayReference );
 	}
-	
+
 	return prevEntry;
 }
 SymbolTableEntry* Parser::parseTermRest(SymbolTableEntry* prevEntry)
@@ -838,7 +839,7 @@ SymbolTableEntry* Parser::parseTermRest(SymbolTableEntry* prevEntry)
 		if( m_parserError )
 			recover( pTermRest );
 
-		return temp;		
+		return temp;
 	}
 	return prevEntry;
 }
