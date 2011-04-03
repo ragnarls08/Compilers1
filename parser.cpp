@@ -103,7 +103,10 @@ void Parser::expectedTokenCode(TokenCode tc)
 	str->append(  t.tokenCodeToString() );
 
 	m_lexan->setError( (char*)str->c_str() );
-
+}
+void Parser::setErrorMessage(char *msg)
+{
+	m_lexan->setError( msg );
 }
 void Parser::match( TokenCode tc )
 {
@@ -475,6 +478,7 @@ void Parser::parseStatement()
 	{
 		m_totalErrors++;
 		m_parserError = true;
+		setErrorMessage( "Excpected ID,IF,WHILE or BEGIN" );
 	}
 	
 }

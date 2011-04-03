@@ -33,6 +33,7 @@ private:
 	void match(TokenCode tc);				// Walk over tokencode tc.  If not a match; report an error
 	void setError(char *err);				// sets an appropriate error message
 	void expectedTokenCode(TokenCode tc);
+	void setErrorMessage(char *msg);
 
 	void parseProgram();
 	SymbolTableEntry* parseProgramDefinition();
