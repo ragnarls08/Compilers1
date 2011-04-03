@@ -5,6 +5,8 @@
 
 %{
 #include "token.h"
+#include <string.h>
+#define MAX_ID_LEN 10
 OpType Oper = op_NONE;
 DataType Type = dt_NONE;
 
@@ -64,7 +66,14 @@ assignop		:=
 ")"				{ Oper = op_NONE; Type = dt_NONE; return(tc_RPAREN);}
 "]"				{ Oper = op_NONE; Type = dt_NONE; return(tc_RBRACKET);}
 
-{id}   			{ Oper = op_NONE; Type = dt_ID ;return(tc_ID);}
+{id}   			{ 	Oper = op_NONE; 
+				Type = dt_ID ;
+				if(strlen(yytext) < MAX_ID_LEN){
+					return(tc_ID);
+				}else{
+					return(tc_ERROR2);
+				}
+			}
 <<EOF>>			{ Oper = op_NONE; Type = dt_NONE; return(tc_EOF);}
 .				{ Oper = op_NONE; Type = dt_NONE; return(tc_ERROR);}
 "\n"			{ Oper = op_NONE; Type = dt_NONE; return(tc_NEWLINE);}

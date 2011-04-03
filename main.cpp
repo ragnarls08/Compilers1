@@ -11,9 +11,16 @@ int main( int /* argc */, char** /* argv */ )
 	Parser p = Parser(false);
 
 	p.parse();
+	int totalErr = p.totalErrors();
 
-	Code* code = p.getCode();
-	code->print();
+    if( totalErr == 0){
+        Code* code = p.getCode();
+        code->print();
+    }
+    else{
+
+        std::cout << "Total number of errors: " << totalErr << "\n";
+    }
 	return 0;
 }
 

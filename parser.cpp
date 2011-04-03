@@ -109,6 +109,7 @@ void Parser::match( TokenCode tc )
 	{
 		if( getTokenCode() != tc )
 		{
+		    m_totalErrors++;
 			expectedTokenCode(tc);
 			m_parserError = true;
 		}
@@ -477,7 +478,7 @@ void Parser::parseIfStatement()
 void Parser::parseWhileStatement()
 {
 	dout << "parseWhileStatement\n";
-	
+
 	SymbolTableEntry *labelEnd = newLabel();
 	SymbolTableEntry *labelTop = newLabel();
 

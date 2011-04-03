@@ -27,20 +27,24 @@ void Scanner::setError(char* msg)
 }
 bool Scanner::notToParser( TokenCode tC)
 {
-	return (tC == tc_ERROR || tC == tc_NEWLINE || tC == tc_COMMENT || tC == tc_SPACE); 
+	return (tC == tc_ERROR || tC == tc_ERROR2 || tC == tc_NEWLINE || tC == tc_COMMENT || tC == tc_SPACE);
 }
 Token* Scanner::nextToken()
 {
 	TokenCode tCode = (TokenCode)lexer->yylex();
 	std::string* str = new std::string( lexer->YYText() );
 
-	const char* lexeme = str->c_str(); 
-	
+	const char* lexeme = str->c_str();
+
 	while( notToParser( tCode ) )
-	{	
+	{
 		if(tCode == tc_ERROR)
 		{
-			m_sourceLine->setError( (char*)"Illegal character");	
+			m_sourceLine->setError( (char*)"Illegal character");
+		}
+		if(tCode == tc_ERROR2)
+		{
+			m_sourceLine->setError( (char*)"Identifier to long");
 		}
 		if(tCode == tc_NEWLINE)
     	{
@@ -48,19 +52,19 @@ Token* Scanner::nextToken()
 	    }
 		else
 	    	m_sourceLine->buildLine(lexeme);
-	
+
 
 		tCode = (TokenCode)lexer->yylex();
 		str->clear();
 		str->append( lexer->YYText() );
 
-		lexeme = str->c_str(); 
+		lexeme = str->c_str();
 	}
-	
+
 	if( tCode == tc_ID ) // identifier
 	{
 		TokenCode tc = keywordCheck(lexeme);
-	
+
 		if(tc)
 		{
 			tCode = tc;
@@ -77,7 +81,7 @@ Token* Scanner::nextToken()
 		setCurrentToken(tCode, Type, Oper );
 
 	m_sourceLine->buildLine(lexeme);
-	delete str;	
+	delete str;
 
 	return &m_currentToken;
 }
