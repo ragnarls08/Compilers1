@@ -52,6 +52,7 @@ SymbolTableEntry* SymbolTable::insert(const char* lexeme)
 	else
 	{
 		cout << "My Symbol Table's to big!" << endl;
+		return NULL;
 	}
 }
 SymbolTableEntry* SymbolTable::lookup(const char* lexeme)
@@ -64,7 +65,7 @@ SymbolTableEntry* SymbolTable::lookup(const char* lexeme)
 			return m_entry[i];
 		i++;
 	}
-	return insert( lexeme );	
+	return insert( lexeme );
 }
 void SymbolTable::print(void){
 	int i = 0;
