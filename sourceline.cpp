@@ -74,8 +74,7 @@ void SourceLine::setError(char* msg)		// sets an error message
 {
 	if( m_lineErrors < MAX_ERRORS_IN_LINE )
 	{
-	    m_errors[m_lineErrors].set(m_firstLexemeColumn, msg);	
-	
+		m_errors[m_lineErrors].set(m_firstLexemeColumn, msg);	
     	++m_lineErrors;
 	}
 }

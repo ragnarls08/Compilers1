@@ -38,6 +38,14 @@ Token* Scanner::nextToken()
 
 	while( notToParser( tCode ) )
 	{
+		if(tCode == tc_NEWLINE)
+    	{
+	        m_sourceLine->newLine();
+	    }
+		else
+	    	m_sourceLine->buildLine(lexeme);
+
+
 		if(tCode == tc_ERROR)
 		{
 			m_sourceLine->setError( (char*)"Illegal character");
@@ -46,12 +54,6 @@ Token* Scanner::nextToken()
 		{
 			m_sourceLine->setError( (char*)"Identifier to long");
 		}
-		if(tCode == tc_NEWLINE)
-    	{
-	        m_sourceLine->newLine();
-	    }
-		else
-	    	m_sourceLine->buildLine(lexeme);
 
 
 		tCode = (TokenCode)lexer->yylex();
