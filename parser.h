@@ -78,7 +78,7 @@ public:
 	~Parser();
 	void parse();
 	SymbolTable* getSymbolTable();
-//	Code* getCode() {return m_code;}
+	Code* getCode() {return m_code;}
 	int totalErrors()	{return m_totalErrors;}
 
 };

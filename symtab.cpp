@@ -15,10 +15,7 @@ EntryList::EntryList()
 }
 void EntryList::push_back( SymbolTableEntry* entry )
 {
-	std::cout.flush();
-	std::cout << m_elist.empty() << "   pushing \n";
 	m_elist.push_back( entry );
-	std::cout << "done pushing \n";
 }
 //SymbolTableEntry
 SymbolTableEntry::SymbolTableEntry(const char* lexeme)
