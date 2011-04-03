@@ -4,7 +4,7 @@
 #include "lists.h"
 #include <string>
 
-#define debugOutput
+//#define debugOutput
 
 #ifdef debugOutput
 	#define dout  std::cout << "\t"
@@ -477,13 +477,15 @@ void Parser::parseIfStatement()
 void Parser::parseWhileStatement()
 {
 	dout << "parseWhileStatement\n";
-
-	match(tc_WHILE);
-    SymbolTableEntry *whileEntry = parseExpression();
+	
 	SymbolTableEntry *labelEnd = newLabel();
 	SymbolTableEntry *labelTop = newLabel();
 
 	m_code->generate(cd_LABEL, NULL,NULL, labelTop);
+
+	match(tc_WHILE);
+    SymbolTableEntry *whileEntry = parseExpression();
+
 	m_code->generate(cd_EQ, whileEntry, m_symTab->lookup("0"), labelEnd);
 
 	if( m_parserError )
